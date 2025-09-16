@@ -1,6 +1,6 @@
 {
 	"name": "@amonlibanio/n8n-nodes-cogfy",
-	"version": "1.0.0",
+	"version": "1.2.0",
 	"description": "n8n community node package for Cogfy API integration",
 	"keywords": [
 		"n8n-community-node-package",
