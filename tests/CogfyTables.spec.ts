@@ -47,7 +47,6 @@ test('request defaults', () => {
     expect(requestDefaults.headers).toEqual({
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'api-key': '={{$credentials.apiKey}}',
     });
     expect(requestDefaults.baseURL).toBe('={{$credentials.baseUrl}}');
   }
