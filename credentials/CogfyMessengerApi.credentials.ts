@@ -48,6 +48,10 @@ export class CogfyMessengerApi implements ICredentialType {
       baseURL: '={{$credentials.baseUrl}}',
       url: '/api/v1/health',
       method: 'GET',
+      headers: {
+        'api-key': '={{$credentials.apiKey}}',
+        'Content-Type': 'application/json',
+      },
     },
   };
 }

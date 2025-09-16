@@ -1,5 +1,11 @@
 import { PropertiesBuilder } from '@amonlibanio/n8n-openapi-node';
-import type { INodeType, INodeTypeDescription, NodeConnectionType } from 'n8n-workflow';
+import type { 
+  IExecuteFunctions, 
+  INodeExecutionData, 
+  INodeType, 
+  INodeTypeDescription, 
+  NodeConnectionType 
+} from 'n8n-workflow';
 import type { OpenAPIV3 } from 'openapi-types';
 import * as doc from './openapi.json';
 
@@ -10,7 +16,7 @@ export class CogfyTables implements INodeType {
   description: INodeTypeDescription = {
     displayName: 'Cogfy Tables',
     name: 'cogfyTables',
-    icon: 'file:public/cogfy.png',
+    icon: 'file:cogfy.png',
     group: ['transform'],
     version: 1,
     subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
@@ -36,4 +42,43 @@ export class CogfyTables implements INodeType {
     },
     properties: properties,
   };
+
+  async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+    const items = this.getInputData();
+    const returnData: INodeExecutionData[] = [];
+
+    for (let i = 0; i < items.length; i++) {
+      try {
+        // Get credentials asynchronously (best practice from n8n docs)
+        await this.getCredentials('cogfyTablesApi');
+        
+        const responseData = await this.helpers.requestWithAuthentication.call(
+          this,
+          'cogfyTablesApi',
+          {
+            method: 'GET',
+            url: '/collections',
+            json: true,
+          }
+        );
+
+        returnData.push({
+          json: responseData,
+        });
+      } catch (error) {
+        if (this.continueOnFail()) {
+          returnData.push({
+            json: { 
+              error: error.message,
+              success: false 
+            },
+          });
+        } else {
+          throw new Error(`Cogfy Tables API error: ${error.message}`);
+        }
+      }
+    }
+
+    return [returnData];
+  }
 }

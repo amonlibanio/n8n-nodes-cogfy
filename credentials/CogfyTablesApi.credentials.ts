@@ -48,6 +48,10 @@ export class CogfyTablesApi implements ICredentialType {
       baseURL: '={{$credentials.baseUrl}}',
       url: '/collections',
       method: 'GET',
+      headers: {
+        'api-key': '={{$credentials.apiKey}}',
+        'Content-Type': 'application/json',
+      },
     },
   };
 }

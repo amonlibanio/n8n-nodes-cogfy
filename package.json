@@ -1,9 +1,15 @@
 {
   "name": "@amonlibanio/n8n-nodes-cogfy",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "n8n node to connect with Cogfy",
   "keywords": [
-    "n8n-community-node-package"
+    "n8n-community-node-package",
+    "cogfy",
+    "api",
+    "messenger",
+    "tables",
+    "database",
+    "automation"
   ],
   "license": "MIT",
   "homepage": "",
@@ -37,17 +43,20 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "credentials/CogfyMessengerApi.credentials.js",
-      "credentials/CogfyTablesApi.credentials.js"
+      "dist/credentials/CogfyMessengerApi.credentials.js",
+      "dist/credentials/CogfyTablesApi.credentials.js"
     ],
     "nodes": [
-      "nodes/CogfyMessenger/CogfyMessenger.node.js",
-      "nodes/CogfyTables/CogfyTables.node.js"
+      "dist/nodes/CogfyMessenger/CogfyMessenger.node.js",
+      "dist/nodes/CogfyTables/CogfyTables.node.js"
     ]
   },
   "dependencies": {
     "n8n-workflow": "^1.82.0",
     "@amonlibanio/n8n-openapi-node": "^1.0.0"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.4",
