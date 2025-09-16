@@ -1,17 +1,10 @@
-import { N8NPropertiesBuilder } from '@devlikeapro/n8n-openapi-node';
-import type { 
-  IExecuteFunctions, 
-  INodeExecutionData, 
-  INodeType, 
-  INodeTypeDescription, 
-  NodeConnectionType 
-} from 'n8n-workflow';
-import { NodeApiError } from 'n8n-workflow';
-import type { OpenAPIV3 } from 'openapi-types';
+import { N8NPropertiesBuilder, type N8NPropertiesBuilderConfig } from '@devlikeapro/n8n-openapi-node';
+import type { INodeType, INodeTypeDescription, NodeConnectionType } from 'n8n-workflow';
 import * as doc from './openapi.json';
 
-const parser = new N8NPropertiesBuilder(doc as unknown as OpenAPIV3.Document);
-const properties = parser.build();
+const config: N8NPropertiesBuilderConfig = {}
+const parser = new N8NPropertiesBuilder(doc, config);
+const properties = parser.build()
 
 export class CogfyTables implements INodeType {
   description: INodeTypeDescription = {
@@ -37,49 +30,9 @@ export class CogfyTables implements INodeType {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'api-key': '={{$credentials.apiKey}}',
       },
       baseURL: '={{$credentials.baseUrl}}',
     },
     properties: properties,
   };
-
-  async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-    const items = this.getInputData();
-    const returnData: INodeExecutionData[] = [];
-
-    for (let i = 0; i < items.length; i++) {
-      try {
-        // Get credentials asynchronously (best practice from n8n docs)
-        await this.getCredentials('cogfyTablesApi');
-        
-        const responseData = await this.helpers.requestWithAuthentication.call(
-          this,
-          'cogfyTablesApi',
-          {
-            method: 'GET',
-            url: '/collections',
-            json: true,
-          }
-        );
-
-        returnData.push({
-          json: responseData,
-        });
-      } catch (error) {
-        if (this.continueOnFail()) {
-          returnData.push({
-            json: { 
-              error: error.message,
-              success: false 
-            },
-          });
-        } else {
-          throw new NodeApiError(this.getNode(), error, { message: `Cogfy Tables API error: ${error.message}` });
-        }
-      }
-    }
-
-    return [returnData];
-  }
 }
