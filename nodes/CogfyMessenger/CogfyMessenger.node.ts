@@ -1,4 +1,4 @@
-import { PropertiesBuilder } from '@amonlibanio/n8n-openapi-node';
+import { N8NPropertiesBuilder } from '@devlikeapro/n8n-openapi-node';
 import type { 
   IExecuteFunctions, 
   INodeExecutionData, 
@@ -10,8 +10,8 @@ import { NodeApiError } from 'n8n-workflow';
 import type { OpenAPIV3 } from 'openapi-types';
 import * as doc from './openapi.json';
 
-const parser = new PropertiesBuilder(doc as unknown as OpenAPIV3.Document);
-const properties = parser.Build();
+const parser = new N8NPropertiesBuilder(doc as unknown as OpenAPIV3.Document);
+const properties = parser.build();
 
 export class CogfyMessenger implements INodeType {
   description: INodeTypeDescription = {
