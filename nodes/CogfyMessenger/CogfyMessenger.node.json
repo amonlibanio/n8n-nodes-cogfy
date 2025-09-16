@@ -1,18 +1,18 @@
 {
-  "node": "n8n-nodes-base.cogfyMessenger",
-  "nodeVersion": "1.0",
-  "codexVersion": "1.0",
-  "categories": ["Communication", "Messaging"],
-  "resources": {
-    "credentialDocumentation": [
-      {
-        "url": "https://messenger-public-api.cogfy.com/docs/"
-      }
-    ],
-    "primaryDocumentation": [
-      {
-        "url": "https://messenger-public-api.cogfy.com/docs/"
-      }
-    ]
-  }
+	"node": "n8n-nodes-base.cogfyMessenger",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Communication", "Messaging"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://messenger-public-api.cogfy.com/docs/"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://messenger-public-api.cogfy.com/docs/"
+			}
+		]
+	}
 }

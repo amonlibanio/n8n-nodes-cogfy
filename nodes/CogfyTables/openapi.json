@@ -1,1817 +1,1833 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "Cogfy Tables API",
-    "description": "API for managing Cogfy collections, records, and fields",
-    "version": "1.0.0",
-    "contact": {
-      "name": "Cogfy Support",
-      "url": "https://docs.cogfy.com"
-    }
-  },
-  "servers": [
-    {
-      "url": "https://api.cogfy.com",
-      "description": "Cogfy API Server"
-    }
-  ],
-  "security": [
-    {
-      "ApiKeyAuth": []
-    }
-  ],
-  "paths": {
-    "/collections": {
-      "get": {
-        "tags": ["Collections"],
-        "summary": "List collections",
-        "description": "Get a list of all collections in the workspace",
-        "operationId": "listCollections",
-        "parameters": [
-          {
-            "name": "pageNumber",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 0
-            },
-            "description": "The page number to retrieve. Starts at 0. Defaults to 0."
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 10
-            },
-            "description": "The number of results per page. Defaults to 10."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Collection"
-                      }
-                    },
-                    "pageNumber": {
-                      "type": "integer"
-                    },
-                    "pageSize": {
-                      "type": "integer"
-                    },
-                    "totalSize": {
-                      "type": "integer"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": ["Collections"],
-        "summary": "Create collection",
-        "description": "Create a new collection",
-        "operationId": "createCollection",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateCollectionRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Collection created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Collection"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/collections/{collectionId}": {
-      "get": {
-        "tags": ["Collections"],
-        "summary": "Get collection",
-        "description": "Get a specific collection by ID",
-        "operationId": "getCollection",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Collection"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": ["Collections"],
-        "summary": "Update collection",
-        "description": "Update a collection",
-        "operationId": "updateCollection",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateCollectionRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Collection updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Collection"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": ["Collections"],
-        "summary": "Delete collection",
-        "description": "Delete a collection",
-        "operationId": "deleteCollection",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Collection deleted successfully"
-          }
-        }
-      }
-    },
-    "/collections/{collectionId}/records": {
-      "get": {
-        "tags": ["Records"],
-        "summary": "List records",
-        "description": "Get records from a collection",
-        "operationId": "listRecords",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "pageNumber",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 0
-            },
-            "description": "The page number to retrieve. Starts at 0. Defaults to 0."
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 50
-            },
-            "description": "The number of results per page. Defaults to 50."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Record"
-                      }
-                    },
-                    "pageNumber": {
-                      "type": "integer"
-                    },
-                    "pageSize": {
-                      "type": "integer"
-                    },
-                    "totalSize": {
-                      "type": "integer"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": ["Records"],
-        "summary": "Create record",
-        "description": "Create a new record in a collection",
-        "operationId": "createRecord",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateRecordRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Record created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Record"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/collections/{collectionId}/records/{recordId}": {
-      "get": {
-        "tags": ["Records"],
-        "summary": "Get record",
-        "description": "Get a specific record by ID",
-        "operationId": "getRecord",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "recordId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Record"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": ["Records"],
-        "summary": "Update record",
-        "description": "Update a record",
-        "operationId": "updateRecord",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "recordId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateRecordRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Record updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Record"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": ["Records"],
-        "summary": "Delete record",
-        "description": "Delete a record",
-        "operationId": "deleteRecord",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "recordId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Record deleted successfully"
-          }
-        }
-      }
-    },
-    "/collections/{collectionId}/records/query": {
-      "post": {
-        "tags": ["Records"],
-        "summary": "Query records",
-        "description": "Query records from a collection with filters",
-        "operationId": "queryRecords",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "pageNumber",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 0
-            },
-            "description": "The page number to retrieve. Starts at 0. Defaults to 0."
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 50
-            },
-            "description": "The number of results per page. Defaults to 50."
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/QueryRecordsRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Record"
-                      }
-                    },
-                    "pageNumber": {
-                      "type": "integer"
-                    },
-                    "pageSize": {
-                      "type": "integer"
-                    },
-                    "totalSize": {
-                      "type": "integer"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/collections/{collectionId}/records/calculate": {
-      "post": {
-        "tags": ["Records"],
-        "summary": "Calculate records",
-        "description": "Calculate records from a collection",
-        "operationId": "calculateRecords",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CalculateRecordsRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Records calculated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CalculateRecordsResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/collections/{collectionId}/fields": {
-      "get": {
-        "tags": ["Fields"],
-        "summary": "List fields",
-        "description": "Get fields from a collection",
-        "operationId": "listFields",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Field"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": ["Fields"],
-        "summary": "Create field",
-        "description": "Create a new field in a collection",
-        "operationId": "createField",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateFieldRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Field created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/collections/{collectionId}/chats": {
-      "get": {
-        "tags": ["Chats"],
-        "summary": "List chats page",
-        "description": "Gets the chats from a collection by its ID",
-        "operationId": "listChats",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "pageNumber",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 0
-            },
-            "description": "The page number to retrieve. Starts at 0. Defaults to 0."
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 10
-            },
-            "description": "The number of results per page. Defaults to 10."
-          },
-          {
-            "name": "fieldId",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The ID of the chat field to filter by."
-          },
-          {
-            "name": "recordId",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            },
-            "description": "The ID of the record to filter by."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Chat"
-                      }
-                    },
-                    "pageNumber": {
-                      "type": "integer"
-                    },
-                    "pageSize": {
-                      "type": "integer"
-                    },
-                    "totalSize": {
-                      "type": "integer"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": ["Chats"],
-        "summary": "Create chat",
-        "description": "Creates a new chat",
-        "operationId": "createChat",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateChatRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Chat created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Chat"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/collections/{collectionId}/chats/{chatId}": {
-      "get": {
-        "tags": ["Chats"],
-        "summary": "Find chat",
-        "description": "Finds a chat by its ID",
-        "operationId": "findChat",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "chatId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Chat"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/collections/{collectionId}/chats/{chatId}/messages": {
-      "get": {
-        "tags": ["Chats"],
-        "summary": "List messages page",
-        "description": "Gets the messages from a chat by its ID",
-        "operationId": "listMessages",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "chatId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "pageNumber",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 0
-            },
-            "description": "The page number to retrieve. Starts at 0. Defaults to 0."
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 10
-            },
-            "description": "The number of results per page. Defaults to 10."
-          },
-          {
-            "name": "roles",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": ["system", "user", "assistant", "tool"]
-              }
-            },
-            "description": "An array of the message roles to filter by."
-          },
-          {
-            "name": "sendDateOrderBy",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "enum": ["asc", "desc"],
-              "default": "asc"
-            },
-            "description": "The sorting direction by date. Defaults to 'asc'."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Message"
-                      }
-                    },
-                    "pageNumber": {
-                      "type": "integer"
-                    },
-                    "pageSize": {
-                      "type": "integer"
-                    },
-                    "totalSize": {
-                      "type": "integer"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": ["Chats"],
-        "summary": "Complete message",
-        "description": "Creates a message and gets a response from a chat",
-        "operationId": "completeMessage",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "chatId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CompleteMessageRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Message completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MessageResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/collections/{collectionId}/files": {
-      "post": {
-        "tags": ["Files"],
-        "summary": "Upload file",
-        "description": "Creates a signed URL to upload a file to Cogfy's bucket",
-        "operationId": "uploadFile",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UploadFileRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Upload URL created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UploadFileResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/collections/{collectionId}/files/{fileId}/complete-upload": {
-      "patch": {
-        "tags": ["Files"],
-        "summary": "Complete upload file",
-        "description": "Runs exchange to publish file by its ID",
-        "operationId": "completeUploadFile",
-        "parameters": [
-          {
-            "name": "collectionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "fileId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "File upload completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/File"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/user-contacts": {
-      "get": {
-        "tags": ["User Contacts"],
-        "summary": "List contacts",
-        "description": "Gets a list of user contacts",
-        "operationId": "listContacts",
-        "parameters": [
-          {
-            "name": "pageNumber",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 0
-            },
-            "description": "The page number to retrieve. Starts at 0. Defaults to 0."
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 100
-            },
-            "description": "The number of results per page. Defaults to 100."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "description": "The ID of the contact."
-                          },
-                          "type": {
-                            "type": "string",
-                            "enum": ["phone"],
-                            "description": "The type of contact."
-                          },
-                          "value": {
-                            "type": "string",
-                            "description": "The contact's phone number as created."
-                          },
-                          "normalizedValue": {
-                            "type": "string",
-                            "description": "The contact's phone number in standardized format."
-                          },
-                          "confirmed": {
-                            "type": "boolean",
-                            "description": "Boolean indicator of contact confirmation."
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": ["User Contacts"],
-        "summary": "Create user contact",
-        "description": "Creates a new contact phone number for a Cogfy user",
-        "operationId": "createUserContact",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateUserContactRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "User contact created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "description": "The unique identifier of the created contact."
-                    },
-                    "type": {
-                      "type": "string",
-                      "enum": ["phone"],
-                      "description": "The type of contact."
-                    },
-                    "value": {
-                      "type": "string",
-                      "description": "The created contact's phone number."
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/user-contacts/{userContactId}": {
-      "delete": {
-        "tags": ["User Contacts"],
-        "summary": "Delete user contact",
-        "description": "Deletes a contact by its ID",
-        "operationId": "deleteUserContact",
-        "parameters": [
-          {
-            "name": "userContactId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The ID of user contact to be deleted."
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "User contact deleted successfully"
-          }
-        }
-      }
-    },
-    "/triggers": {
-      "get": {
-        "tags": ["Triggers"],
-        "summary": "List triggers",
-        "description": "Gets a list of all triggers/webhooks",
-        "operationId": "listTriggers",
-        "parameters": [
-          {
-            "name": "pageNumber",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 0
-            },
-            "description": "The page number to retrieve. Starts at 0. Defaults to 0."
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "default": 100
-            },
-            "description": "The number of results per page. Defaults to 100."
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "description": "The ID of the trigger."
-                          },
-                          "collectionId": {
-                            "type": "string",
-                            "description": "The ID of the collection the trigger is in."
-                          },
-                          "fieldId": {
-                            "type": "string",
-                            "description": "The ID of the field that receives the request body."
-                          },
-                          "key": {
-                            "type": "string",
-                            "description": "The unique key that identifies the trigger, used to build the trigger URL."
-                          }
-                        }
-                      }
-                    },
-                    "totalSize": {
-                      "type": "integer"
-                    },
-                    "pageNumber": {
-                      "type": "integer"
-                    },
-                    "pageSize": {
-                      "type": "integer"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": ["Triggers"],
-        "summary": "Create trigger",
-        "description": "Creates a new trigger/webhook for a collection",
-        "operationId": "createTrigger",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateTriggerRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Trigger created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "key": {
-                      "type": "string",
-                      "description": "The unique key that identifies the trigger, used to build the trigger URL"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/triggers/{workspaceId}/{key}": {
-      "post": {
-        "tags": ["Triggers"],
-        "summary": "Execute trigger (Webhook Inbound)",
-        "description": "Using the key to identify the trigger, creates a new record in the trigger's collection with the request body in the trigger's field",
-        "operationId": "executeTrigger",
-        "parameters": [
-          {
-            "name": "workspaceId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The workspace ID where the trigger belongs"
-          },
-          {
-            "name": "key",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The trigger key to identify which trigger to execute"
-          }
-        ],
-        "requestBody": {
-          "description": "The data to be sent to the trigger",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "description": "Any JSON object that will be stored in the trigger's collection field"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Trigger executed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "recordId": {
-                      "type": "string",
-                      "description": "ID of the created record"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Trigger not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "securitySchemes": {
-      "ApiKeyAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "Api-Key"
-      }
-    },
-    "schemas": {
-      "Collection": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "CreateCollectionRequest": {
-        "type": "object",
-        "required": ["name"],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          }
-        }
-      },
-      "UpdateCollectionRequest": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          }
-        }
-      },
-      "Record": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "collectionId": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "CreateRecordRequest": {
-        "type": "object",
-        "required": ["data"],
-        "properties": {
-          "data": {
-            "type": "object"
-          }
-        }
-      },
-      "UpdateRecordRequest": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "object"
-          }
-        }
-      },
-      "Field": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "collectionId": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": ["text", "number", "boolean", "date", "email", "url", "json"]
-          },
-          "operation": {
-            "type": "string",
-            "nullable": true,
-            "description": "The operation performed by the field"
-          },
-          "required": {
-            "type": "boolean"
-          },
-          "defaultValue": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "CreateFieldRequest": {
-        "type": "object",
-        "required": ["name", "type"],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": ["text", "number", "boolean", "date", "email", "url", "json"]
-          }
-        }
-      },
-      "Chat": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "collectionId": {
-            "type": "string"
-          },
-          "fieldId": {
-            "type": "string"
-          },
-          "recordId": {
-            "type": "string"
-          },
-          "messages": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MessageInput"
-            },
-            "description": "An array of the chat messages."
-          }
-        }
-      },
-      "CreateChatRequest": {
-        "type": "object",
-        "required": ["fieldId", "recordId"],
-        "properties": {
-          "fieldId": {
-            "type": "string",
-            "description": "The ID of the chat field."
-          },
-          "recordId": {
-            "type": "string",
-            "description": "The ID of the chat record that the chat will be created in."
-          },
-          "properties": {
-            "type": "object",
-            "description": "An object with the field ID as the key and the value as the field value to populate other fields of the record."
-          },
-          "messages": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MessageInput"
-            },
-            "description": "Contains an array of messages to be set as history for the chat."
-          }
-        }
-      },
-      "Message": {
-        "type": "object",
-        "properties": {
-          "role": {
-            "type": "string",
-            "enum": ["user", "assistant", "system", "tool"]
-          },
-          "content": {
-            "type": "string"
-          },
-          "sendDate": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "CompleteMessageRequest": {
-        "type": "object",
-        "required": ["content", "contentType"],
-        "properties": {
-          "content": {
-            "type": "string",
-            "description": "The content of the message."
-          },
-          "contentType": {
-            "type": "string",
-            "enum": ["text", "audio"],
-            "description": "The type of content. Can be 'text' or 'audio'."
-          },
-          "file": {
-            "type": "object",
-            "description": "Contains file information if a file is included in the message.",
-            "properties": {
-              "name": {
-                "type": "string",
-                "description": "The name of the file."
-              },
-              "size": {
-                "type": "integer",
-                "description": "The file size in bytes."
-              },
-              "mimeType": {
-                "type": "string",
-                "description": "The MIME type of the file."
-              },
-              "base64": {
-                "type": "string",
-                "description": "The base64-encoded file content."
-              }
-            }
-          }
-        }
-      },
-      "MessageInput": {
-        "type": "object",
-        "required": ["role", "content"],
-        "properties": {
-          "role": {
-            "type": "string",
-            "enum": ["user", "assistant", "system", "tool"]
-          },
-          "content": {
-            "type": "string"
-          }
-        }
-      },
-      "MessageResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The unique identifier of the created message."
-          },
-          "content": {
-            "type": "string",
-            "description": "The content of the message."
-          },
-          "files": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "description": "The name of the file."
-                },
-                "size": {
-                  "type": "integer",
-                  "description": "The file size in bytes."
-                },
-                "mimeType": {
-                  "type": "string",
-                  "description": "The MIME type of the file."
-                },
-                "base64": {
-                  "type": "string",
-                  "description": "The base64-encoded file content."
-                }
-              }
-            },
-            "description": "A list of files attached to the message."
-          }
-        }
-      },
-      "File": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "url": {
-            "type": "string"
-          },
-          "size": {
-            "type": "integer"
-          },
-          "mimeType": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
-      },
-      "UploadFileRequest": {
-        "type": "object",
-        "required": ["fieldId", "recordId", "file"],
-        "properties": {
-          "fieldId": {
-            "type": "string",
-            "description": "The ID of the field that the file will be uploaded to."
-          },
-          "recordId": {
-            "type": "string",
-            "description": "The ID of the record that the file will be uploaded to."
-          },
-          "file": {
-            "type": "object",
-            "required": ["type", "name", "size"],
-            "description": "Contains file information to be uploaded.",
-            "properties": {
-              "type": {
-                "type": "string",
-                "description": "The type of the file."
-              },
-              "name": {
-                "type": "string",
-                "description": "The name of the file."
-              },
-              "size": {
-                "type": "integer",
-                "description": "The file size in bytes."
-              }
-            }
-          }
-        }
-      },
-      "UploadFileResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The unique identifier of the created file."
-          },
-          "recordId": {
-            "type": "string",
-            "description": "The ID of the record that the file will be uploaded to."
-          },
-          "signedUrl": {
-            "type": "string",
-            "description": "The created URL for the file in the bucket."
-          },
-          "fields": {
-            "type": "object",
-            "description": "The file metadata."
-          }
-        }
-      },
-      "UserContact": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The ID of the contact."
-          },
-          "type": {
-            "type": "string",
-            "enum": ["phone"],
-            "description": "The type of contact."
-          },
-          "value": {
-            "type": "string",
-            "description": "The contact's phone number as created."
-          },
-          "normalizedValue": {
-            "type": "string",
-            "description": "The contact's phone number in standardized format."
-          },
-          "confirmed": {
-            "type": "boolean",
-            "description": "Boolean indicator of contact confirmation."
-          }
-        }
-      },
-      "CreateUserContactRequest": {
-        "type": "object",
-        "required": ["userId", "value"],
-        "properties": {
-          "userId": {
-            "type": "string",
-            "description": "The ID of the user to create the contact."
-          },
-          "value": {
-            "type": "string",
-            "description": "The user's phone number."
-          }
-        }
-      },
-      "Trigger": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The ID of the trigger."
-          },
-          "collectionId": {
-            "type": "string",
-            "description": "The ID of the collection the trigger is in."
-          },
-          "fieldId": {
-            "type": "string",
-            "description": "The ID of the field that receives the request body."
-          },
-          "key": {
-            "type": "string",
-            "description": "The unique key that identifies the trigger, used to build the trigger URL."
-          }
-        }
-      },
-      "CreateTriggerRequest": {
-        "type": "object",
-        "required": ["collectionId", "fieldId"],
-        "properties": {
-          "collectionId": {
-            "type": "string"
-          },
-          "fieldId": {
-            "type": "string"
-          }
-        }
-      },
-      "QueryRecordsRequest": {
-        "type": "object",
-        "properties": {
-          "filters": {
-            "type": "object",
-            "description": "Filter conditions for the query"
-          },
-          "sort": {
-            "type": "object",
-            "properties": {
-              "field": {
-                "type": "string"
-              },
-              "order": {
-                "type": "string",
-                "enum": ["asc", "desc"]
-              }
-            }
-          }
-        }
-      },
-      "CalculateRecordsRequest": {
-        "type": "object",
-        "properties": {
-          "operation": {
-            "type": "string",
-            "enum": ["count", "sum", "avg", "min", "max"]
-          },
-          "field": {
-            "type": "string",
-            "description": "Field to perform calculation on"
-          },
-          "filters": {
-            "type": "object",
-            "description": "Filter conditions for the calculation"
-          }
-        }
-      },
-      "CalculateRecordsResponse": {
-        "type": "object",
-        "properties": {
-          "result": {
-            "type": "number",
-            "description": "The calculated result"
-          },
-          "operation": {
-            "type": "string",
-            "description": "The operation performed"
-          },
-          "field": {
-            "type": "string",
-            "description": "The field that was calculated"
-          }
-        }
-      }
-    }
-  }
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Cogfy Tables API",
+		"description": "API for managing Cogfy collections, records, and fields",
+		"version": "1.0.0",
+		"contact": {
+			"name": "Cogfy Support",
+			"url": "https://docs.cogfy.com"
+		}
+	},
+	"servers": [
+		{
+			"url": "https://api.cogfy.com",
+			"description": "Cogfy API Server"
+		}
+	],
+	"security": [
+		{
+			"ApiKeyAuth": []
+		}
+	],
+	"paths": {
+		"/collections": {
+			"get": {
+				"tags": ["Collections"],
+				"summary": "List collections",
+				"description": "Get a list of all collections in the workspace",
+				"operationId": "listCollections",
+				"parameters": [
+					{
+						"name": "pageNumber",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"default": 0
+						},
+						"description": "The page number to retrieve. Starts at 0. Defaults to 0."
+					},
+					{
+						"name": "pageSize",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"default": 10
+						},
+						"description": "The number of results per page. Defaults to 10."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/Collection"
+											}
+										},
+										"pageNumber": {
+											"type": "integer"
+										},
+										"pageSize": {
+											"type": "integer"
+										},
+										"totalSize": {
+											"type": "integer"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": ["Collections"],
+				"summary": "Create collection",
+				"description": "Create a new collection",
+				"operationId": "createCollection",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateCollectionRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Collection created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Collection"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/collections/{collectionId}": {
+			"get": {
+				"tags": ["Collections"],
+				"summary": "Get collection",
+				"description": "Get a specific collection by ID",
+				"operationId": "getCollection",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Collection"
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": ["Collections"],
+				"summary": "Update collection",
+				"description": "Update a collection",
+				"operationId": "updateCollection",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateCollectionRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Collection updated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Collection"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": ["Collections"],
+				"summary": "Delete collection",
+				"description": "Delete a collection",
+				"operationId": "deleteCollection",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "Collection deleted successfully"
+					}
+				}
+			}
+		},
+		"/collections/{collectionId}/records": {
+			"get": {
+				"tags": ["Records"],
+				"summary": "List records",
+				"description": "Get records from a collection",
+				"operationId": "listRecords",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "pageNumber",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"default": 0
+						},
+						"description": "The page number to retrieve. Starts at 0. Defaults to 0."
+					},
+					{
+						"name": "pageSize",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"default": 50
+						},
+						"description": "The number of results per page. Defaults to 50."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/Record"
+											}
+										},
+										"pageNumber": {
+											"type": "integer"
+										},
+										"pageSize": {
+											"type": "integer"
+										},
+										"totalSize": {
+											"type": "integer"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": ["Records"],
+				"summary": "Create record",
+				"description": "Create a new record in a collection",
+				"operationId": "createRecord",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateRecordRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Record created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Record"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/collections/{collectionId}/records/{recordId}": {
+			"get": {
+				"tags": ["Records"],
+				"summary": "Get record",
+				"description": "Get a specific record by ID",
+				"operationId": "getRecord",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "recordId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Record"
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": ["Records"],
+				"summary": "Update record",
+				"description": "Update a record",
+				"operationId": "updateRecord",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "recordId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateRecordRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Record updated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Record"
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": ["Records"],
+				"summary": "Delete record",
+				"description": "Delete a record",
+				"operationId": "deleteRecord",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "recordId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "Record deleted successfully"
+					}
+				}
+			}
+		},
+		"/collections/{collectionId}/records/query": {
+			"post": {
+				"tags": ["Records"],
+				"summary": "Query records",
+				"description": "Query records from a collection with filters",
+				"operationId": "queryRecords",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "pageNumber",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"default": 0
+						},
+						"description": "The page number to retrieve. Starts at 0. Defaults to 0."
+					},
+					{
+						"name": "pageSize",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"default": 50
+						},
+						"description": "The number of results per page. Defaults to 50."
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/QueryRecordsRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/Record"
+											}
+										},
+										"pageNumber": {
+											"type": "integer"
+										},
+										"pageSize": {
+											"type": "integer"
+										},
+										"totalSize": {
+											"type": "integer"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/collections/{collectionId}/records/calculate": {
+			"post": {
+				"tags": ["Records"],
+				"summary": "Calculate records",
+				"description": "Calculate records from a collection",
+				"operationId": "calculateRecords",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CalculateRecordsRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Records calculated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CalculateRecordsResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/collections/{collectionId}/fields": {
+			"get": {
+				"tags": ["Fields"],
+				"summary": "List fields",
+				"description": "Get fields from a collection",
+				"operationId": "listFields",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/Field"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": ["Fields"],
+				"summary": "Create field",
+				"description": "Create a new field in a collection",
+				"operationId": "createField",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateFieldRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Field created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/collections/{collectionId}/chats": {
+			"get": {
+				"tags": ["Chats"],
+				"summary": "List chats page",
+				"description": "Gets the chats from a collection by its ID",
+				"operationId": "listChats",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "pageNumber",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"default": 0
+						},
+						"description": "The page number to retrieve. Starts at 0. Defaults to 0."
+					},
+					{
+						"name": "pageSize",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"default": 10
+						},
+						"description": "The number of results per page. Defaults to 10."
+					},
+					{
+						"name": "fieldId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						},
+						"description": "The ID of the chat field to filter by."
+					},
+					{
+						"name": "recordId",
+						"in": "query",
+						"schema": {
+							"type": "string"
+						},
+						"description": "The ID of the record to filter by."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/Chat"
+											}
+										},
+										"pageNumber": {
+											"type": "integer"
+										},
+										"pageSize": {
+											"type": "integer"
+										},
+										"totalSize": {
+											"type": "integer"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": ["Chats"],
+				"summary": "Create chat",
+				"description": "Creates a new chat",
+				"operationId": "createChat",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateChatRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Chat created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Chat"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/collections/{collectionId}/chats/{chatId}": {
+			"get": {
+				"tags": ["Chats"],
+				"summary": "Find chat",
+				"description": "Finds a chat by its ID",
+				"operationId": "findChat",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "chatId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Chat"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/collections/{collectionId}/chats/{chatId}/messages": {
+			"get": {
+				"tags": ["Chats"],
+				"summary": "List messages page",
+				"description": "Gets the messages from a chat by its ID",
+				"operationId": "listMessages",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "chatId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "pageNumber",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"default": 0
+						},
+						"description": "The page number to retrieve. Starts at 0. Defaults to 0."
+					},
+					{
+						"name": "pageSize",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"default": 10
+						},
+						"description": "The number of results per page. Defaults to 10."
+					},
+					{
+						"name": "roles",
+						"in": "query",
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string",
+								"enum": ["system", "user", "assistant", "tool"]
+							}
+						},
+						"description": "An array of the message roles to filter by."
+					},
+					{
+						"name": "sendDateOrderBy",
+						"in": "query",
+						"schema": {
+							"type": "string",
+							"enum": ["asc", "desc"],
+							"default": "asc"
+						},
+						"description": "The sorting direction by date. Defaults to 'asc'."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"$ref": "#/components/schemas/Message"
+											}
+										},
+										"pageNumber": {
+											"type": "integer"
+										},
+										"pageSize": {
+											"type": "integer"
+										},
+										"totalSize": {
+											"type": "integer"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": ["Chats"],
+				"summary": "Complete message",
+				"description": "Creates a message and gets a response from a chat",
+				"operationId": "completeMessage",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "chatId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CompleteMessageRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Message completed successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/MessageResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/collections/{collectionId}/files": {
+			"post": {
+				"tags": ["Files"],
+				"summary": "Upload file",
+				"description": "Creates a signed URL to upload a file to Cogfy's bucket",
+				"operationId": "uploadFile",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UploadFileRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Upload URL created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/UploadFileResponse"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/collections/{collectionId}/files/{fileId}/complete-upload": {
+			"patch": {
+				"tags": ["Files"],
+				"summary": "Complete upload file",
+				"description": "Runs exchange to publish file by its ID",
+				"operationId": "completeUploadFile",
+				"parameters": [
+					{
+						"name": "collectionId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "fileId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "File upload completed successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/File"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/user-contacts": {
+			"get": {
+				"tags": ["User Contacts"],
+				"summary": "List contacts",
+				"description": "Gets a list of user contacts",
+				"operationId": "listContacts",
+				"parameters": [
+					{
+						"name": "pageNumber",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"default": 0
+						},
+						"description": "The page number to retrieve. Starts at 0. Defaults to 0."
+					},
+					{
+						"name": "pageSize",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"default": 100
+						},
+						"description": "The number of results per page. Defaults to 100."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"description": "The ID of the contact."
+													},
+													"type": {
+														"type": "string",
+														"enum": ["phone"],
+														"description": "The type of contact."
+													},
+													"value": {
+														"type": "string",
+														"description": "The contact's phone number as created."
+													},
+													"normalizedValue": {
+														"type": "string",
+														"description": "The contact's phone number in standardized format."
+													},
+													"confirmed": {
+														"type": "boolean",
+														"description": "Boolean indicator of contact confirmation."
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": ["User Contacts"],
+				"summary": "Create user contact",
+				"description": "Creates a new contact phone number for a Cogfy user",
+				"operationId": "createUserContact",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateUserContactRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "User contact created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"description": "The unique identifier of the created contact."
+										},
+										"type": {
+											"type": "string",
+											"enum": ["phone"],
+											"description": "The type of contact."
+										},
+										"value": {
+											"type": "string",
+											"description": "The created contact's phone number."
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/user-contacts/{userContactId}": {
+			"delete": {
+				"tags": ["User Contacts"],
+				"summary": "Delete user contact",
+				"description": "Deletes a contact by its ID",
+				"operationId": "deleteUserContact",
+				"parameters": [
+					{
+						"name": "userContactId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The ID of user contact to be deleted."
+					}
+				],
+				"responses": {
+					"204": {
+						"description": "User contact deleted successfully"
+					}
+				}
+			}
+		},
+		"/triggers": {
+			"get": {
+				"tags": ["Triggers"],
+				"summary": "List triggers",
+				"description": "Gets a list of all triggers/webhooks",
+				"operationId": "listTriggers",
+				"parameters": [
+					{
+						"name": "pageNumber",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"default": 0
+						},
+						"description": "The page number to retrieve. Starts at 0. Defaults to 0."
+					},
+					{
+						"name": "pageSize",
+						"in": "query",
+						"schema": {
+							"type": "integer",
+							"default": 100
+						},
+						"description": "The number of results per page. Defaults to 100."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"description": "The ID of the trigger."
+													},
+													"collectionId": {
+														"type": "string",
+														"description": "The ID of the collection the trigger is in."
+													},
+													"fieldId": {
+														"type": "string",
+														"description": "The ID of the field that receives the request body."
+													},
+													"key": {
+														"type": "string",
+														"description": "The unique key that identifies the trigger, used to build the trigger URL."
+													}
+												}
+											}
+										},
+										"totalSize": {
+											"type": "integer"
+										},
+										"pageNumber": {
+											"type": "integer"
+										},
+										"pageSize": {
+											"type": "integer"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": ["Triggers"],
+				"summary": "Create trigger",
+				"description": "Creates a new trigger/webhook for a collection",
+				"operationId": "createTrigger",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateTriggerRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Trigger created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"key": {
+											"type": "string",
+											"description": "The unique key that identifies the trigger, used to build the trigger URL"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/triggers/{workspaceId}/{key}": {
+			"post": {
+				"tags": ["Triggers"],
+				"summary": "Execute trigger (Webhook Inbound)",
+				"description": "Using the key to identify the trigger, creates a new record in the trigger's collection with the request body in the trigger's field",
+				"operationId": "executeTrigger",
+				"parameters": [
+					{
+						"name": "workspaceId",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The workspace ID where the trigger belongs"
+					},
+					{
+						"name": "key",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "The trigger key to identify which trigger to execute"
+					}
+				],
+				"requestBody": {
+					"description": "The data to be sent to the trigger",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"description": "Any JSON object that will be stored in the trigger's collection field"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Trigger executed successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"success": {
+											"type": "boolean"
+										},
+										"message": {
+											"type": "string"
+										},
+										"recordId": {
+											"type": "string",
+											"description": "ID of the created record"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Trigger not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"securitySchemes": {
+			"ApiKeyAuth": {
+				"type": "apiKey",
+				"in": "header",
+				"name": "Api-Key"
+			}
+		},
+		"schemas": {
+			"Collection": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				}
+			},
+			"CreateCollectionRequest": {
+				"type": "object",
+				"required": ["name"],
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					}
+				}
+			},
+			"UpdateCollectionRequest": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"description": {
+						"type": "string"
+					}
+				}
+			},
+			"Record": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"collectionId": {
+						"type": "string"
+					},
+					"data": {
+						"type": "object"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				}
+			},
+			"CreateRecordRequest": {
+				"type": "object",
+				"required": ["data"],
+				"properties": {
+					"data": {
+						"type": "object"
+					}
+				}
+			},
+			"UpdateRecordRequest": {
+				"type": "object",
+				"properties": {
+					"data": {
+						"type": "object"
+					}
+				}
+			},
+			"Field": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"collectionId": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string",
+						"enum": [
+							"text",
+							"number",
+							"boolean",
+							"date",
+							"email",
+							"url",
+							"json"
+						]
+					},
+					"operation": {
+						"type": "string",
+						"nullable": true,
+						"description": "The operation performed by the field"
+					},
+					"required": {
+						"type": "boolean"
+					},
+					"defaultValue": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				}
+			},
+			"CreateFieldRequest": {
+				"type": "object",
+				"required": ["name", "type"],
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string",
+						"enum": [
+							"text",
+							"number",
+							"boolean",
+							"date",
+							"email",
+							"url",
+							"json"
+						]
+					}
+				}
+			},
+			"Chat": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"collectionId": {
+						"type": "string"
+					},
+					"fieldId": {
+						"type": "string"
+					},
+					"recordId": {
+						"type": "string"
+					},
+					"messages": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/MessageInput"
+						},
+						"description": "An array of the chat messages."
+					}
+				}
+			},
+			"CreateChatRequest": {
+				"type": "object",
+				"required": ["fieldId", "recordId"],
+				"properties": {
+					"fieldId": {
+						"type": "string",
+						"description": "The ID of the chat field."
+					},
+					"recordId": {
+						"type": "string",
+						"description": "The ID of the chat record that the chat will be created in."
+					},
+					"properties": {
+						"type": "object",
+						"description": "An object with the field ID as the key and the value as the field value to populate other fields of the record."
+					},
+					"messages": {
+						"type": "array",
+						"items": {
+							"$ref": "#/components/schemas/MessageInput"
+						},
+						"description": "Contains an array of messages to be set as history for the chat."
+					}
+				}
+			},
+			"Message": {
+				"type": "object",
+				"properties": {
+					"role": {
+						"type": "string",
+						"enum": ["user", "assistant", "system", "tool"]
+					},
+					"content": {
+						"type": "string"
+					},
+					"sendDate": {
+						"type": "string",
+						"format": "date-time"
+					}
+				}
+			},
+			"CompleteMessageRequest": {
+				"type": "object",
+				"required": ["content", "contentType"],
+				"properties": {
+					"content": {
+						"type": "string",
+						"description": "The content of the message."
+					},
+					"contentType": {
+						"type": "string",
+						"enum": ["text", "audio"],
+						"description": "The type of content. Can be 'text' or 'audio'."
+					},
+					"file": {
+						"type": "object",
+						"description": "Contains file information if a file is included in the message.",
+						"properties": {
+							"name": {
+								"type": "string",
+								"description": "The name of the file."
+							},
+							"size": {
+								"type": "integer",
+								"description": "The file size in bytes."
+							},
+							"mimeType": {
+								"type": "string",
+								"description": "The MIME type of the file."
+							},
+							"base64": {
+								"type": "string",
+								"description": "The base64-encoded file content."
+							}
+						}
+					}
+				}
+			},
+			"MessageInput": {
+				"type": "object",
+				"required": ["role", "content"],
+				"properties": {
+					"role": {
+						"type": "string",
+						"enum": ["user", "assistant", "system", "tool"]
+					},
+					"content": {
+						"type": "string"
+					}
+				}
+			},
+			"MessageResponse": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"description": "The unique identifier of the created message."
+					},
+					"content": {
+						"type": "string",
+						"description": "The content of the message."
+					},
+					"files": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string",
+									"description": "The name of the file."
+								},
+								"size": {
+									"type": "integer",
+									"description": "The file size in bytes."
+								},
+								"mimeType": {
+									"type": "string",
+									"description": "The MIME type of the file."
+								},
+								"base64": {
+									"type": "string",
+									"description": "The base64-encoded file content."
+								}
+							}
+						},
+						"description": "A list of files attached to the message."
+					}
+				}
+			},
+			"File": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"url": {
+						"type": "string"
+					},
+					"size": {
+						"type": "integer"
+					},
+					"mimeType": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				}
+			},
+			"UploadFileRequest": {
+				"type": "object",
+				"required": ["fieldId", "recordId", "file"],
+				"properties": {
+					"fieldId": {
+						"type": "string",
+						"description": "The ID of the field that the file will be uploaded to."
+					},
+					"recordId": {
+						"type": "string",
+						"description": "The ID of the record that the file will be uploaded to."
+					},
+					"file": {
+						"type": "object",
+						"required": ["type", "name", "size"],
+						"description": "Contains file information to be uploaded.",
+						"properties": {
+							"type": {
+								"type": "string",
+								"description": "The type of the file."
+							},
+							"name": {
+								"type": "string",
+								"description": "The name of the file."
+							},
+							"size": {
+								"type": "integer",
+								"description": "The file size in bytes."
+							}
+						}
+					}
+				}
+			},
+			"UploadFileResponse": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"description": "The unique identifier of the created file."
+					},
+					"recordId": {
+						"type": "string",
+						"description": "The ID of the record that the file will be uploaded to."
+					},
+					"signedUrl": {
+						"type": "string",
+						"description": "The created URL for the file in the bucket."
+					},
+					"fields": {
+						"type": "object",
+						"description": "The file metadata."
+					}
+				}
+			},
+			"UserContact": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"description": "The ID of the contact."
+					},
+					"type": {
+						"type": "string",
+						"enum": ["phone"],
+						"description": "The type of contact."
+					},
+					"value": {
+						"type": "string",
+						"description": "The contact's phone number as created."
+					},
+					"normalizedValue": {
+						"type": "string",
+						"description": "The contact's phone number in standardized format."
+					},
+					"confirmed": {
+						"type": "boolean",
+						"description": "Boolean indicator of contact confirmation."
+					}
+				}
+			},
+			"CreateUserContactRequest": {
+				"type": "object",
+				"required": ["userId", "value"],
+				"properties": {
+					"userId": {
+						"type": "string",
+						"description": "The ID of the user to create the contact."
+					},
+					"value": {
+						"type": "string",
+						"description": "The user's phone number."
+					}
+				}
+			},
+			"Trigger": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string",
+						"description": "The ID of the trigger."
+					},
+					"collectionId": {
+						"type": "string",
+						"description": "The ID of the collection the trigger is in."
+					},
+					"fieldId": {
+						"type": "string",
+						"description": "The ID of the field that receives the request body."
+					},
+					"key": {
+						"type": "string",
+						"description": "The unique key that identifies the trigger, used to build the trigger URL."
+					}
+				}
+			},
+			"CreateTriggerRequest": {
+				"type": "object",
+				"required": ["collectionId", "fieldId"],
+				"properties": {
+					"collectionId": {
+						"type": "string"
+					},
+					"fieldId": {
+						"type": "string"
+					}
+				}
+			},
+			"QueryRecordsRequest": {
+				"type": "object",
+				"properties": {
+					"filters": {
+						"type": "object",
+						"description": "Filter conditions for the query"
+					},
+					"sort": {
+						"type": "object",
+						"properties": {
+							"field": {
+								"type": "string"
+							},
+							"order": {
+								"type": "string",
+								"enum": ["asc", "desc"]
+							}
+						}
+					}
+				}
+			},
+			"CalculateRecordsRequest": {
+				"type": "object",
+				"properties": {
+					"operation": {
+						"type": "string",
+						"enum": ["count", "sum", "avg", "min", "max"]
+					},
+					"field": {
+						"type": "string",
+						"description": "Field to perform calculation on"
+					},
+					"filters": {
+						"type": "object",
+						"description": "Filter conditions for the calculation"
+					}
+				}
+			},
+			"CalculateRecordsResponse": {
+				"type": "object",
+				"properties": {
+					"result": {
+						"type": "number",
+						"description": "The calculated result"
+					},
+					"operation": {
+						"type": "string",
+						"description": "The operation performed"
+					},
+					"field": {
+						"type": "string",
+						"description": "The field that was calculated"
+					}
+				}
+			}
+		}
+	}
 }

@@ -1,18 +1,18 @@
 {
-  "node": "n8n-nodes-base.cogfyTables",
-  "nodeVersion": "1.0",
-  "codexVersion": "1.0",
-  "categories": ["Data", "Database"],
-  "resources": {
-    "credentialDocumentation": [
-      {
-        "url": "https://docs.cogfy.com/api-reference/authentication"
-      }
-    ],
-    "primaryDocumentation": [
-      {
-        "url": "https://docs.cogfy.com/api-reference"
-      }
-    ]
-  }
+	"node": "n8n-nodes-base.cogfyTables",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Data", "Database"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://docs.cogfy.com/api-reference/authentication"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://docs.cogfy.com/api-reference"
+			}
+		]
+	}
 }

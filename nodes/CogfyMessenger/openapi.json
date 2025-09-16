@@ -1,1918 +1,1928 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "Cogfy Messenger Public API",
-    "version": "1.0.0",
-    "description": "API for interacting with the Cogfy Messenger platform"
-  },
-  "components": {
-    "securitySchemes": {
-      "ApiKeyAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "api-key"
-      }
-    }
-  },
-  "security": [
-    {
-      "ApiKeyAuth": []
-    }
-  ],
-  "servers": [
-    {
-      "url": "https://messenger-public-api.cogfy.com",
-      "description": "Production server"
-    },
-    {
-      "url": "http://localhost:3276",
-      "description": "Local server"
-    }
-  ],
-  "paths": {
-    "/broadcasts": {
-      "post": {
-        "summary": "Create a new broadcast",
-        "description": "Creates a new broadcast with the specified phone number and contacts query.",
-        "tags": ["Broadcasts"],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": ["text"],
-                    "description": "The type of the broadcast message."
-                  },
-                  "title": {
-                    "type": "string",
-                    "maxLength": 100,
-                    "description": "The title of the broadcast message."
-                  },
-                  "content": {
-                    "type": "string",
-                    "maxLength": 1024,
-                    "description": "The content of the broadcast message."
-                  },
-                  "phoneNumberId": {
-                    "type": "string",
-                    "format": "uuid",
-                    "description": "The ID of the phone number to use for the broadcast."
-                  },
-                  "contactsQuery": {
-                    "type": "object",
-                    "properties": {
-                      "tags": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "format": "uuid"
-                            },
-                            "name": {
-                              "type": "string",
-                              "description": "The tags to filter contacts for the broadcast."
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "responses": {
-              "201": {
-                "description": "Broadcast created successfully",
-                "content": {
-                  "application/json": {
-                    "schema": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "format": "uuid",
-                          "description": "The ID of the created broadcast."
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              "400": {
-                "description": "Bad request, invalid input data"
-              },
-              "404": {
-                "description": "Phone number not found"
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "summary": "List all broadcasts",
-        "tags": ["Broadcasts"],
-        "responses": {
-          "200": {
-            "description": "A list of broadcasts",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "status": {
-                            "type": "string",
-                            "enum": ["pending", "sent"]
-                          },
-                          "createDate": {
-                            "type": "string",
-                            "format": "date-time"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/broadcasts/{broadcastId}": {
-      "get": {
-        "summary": "Get a broadcast by ID",
-        "tags": ["Broadcasts"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "broadcastId",
-            "required": true
-          }
-        ],
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "responses": {
-          "200": {
-            "description": "Broadcast details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "status": {
-                      "type": "string",
-                      "enum": ["pending", "sent"]
-                    },
-                    "createDate": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/broadcasts/{broadcastId}/send": {
-      "post": {
-        "summary": "Send a broadcast by ID",
-        "tags": ["Broadcasts"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "broadcastId",
-            "required": true
-          }
-        ],
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "responses": {
-          "204": {
-            "description": "Broadcast sent successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                },
-                "properties": {
-                  "message": {
-                    "type": "string",
-                    "description": "Broadcast sent successfully"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/chunks/{chunkId}": {
-      "delete": {
-        "summary": "Delete a chunk by ID",
-        "description": "Deletes a chunk with the specified ID.",
-        "tags": ["Embeddings"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "chunkId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Chunk deleted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    }
-                  }
-                }
-              },
-              "description": "The ID of the deleted chunk."
-            }
-          },
-          "404": {
-            "description": "Chunk not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Chunk not found"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "summary": "Get a chunk by ID",
-        "tags": ["Embeddings"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "chunkId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "An embedding chunk",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "workspaceId": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "sourceType": {
-                      "type": "string"
-                    },
-                    "sourceId": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "provider": {
-                      "type": "string"
-                    },
-                    "model": {
-                      "type": "string"
-                    },
-                    "content": {
-                      "type": "string"
-                    },
-                    "embedding": {
-                      "type": "array",
-                      "items": {
-                        "type": "number"
-                      }
-                    },
-                    "metadata": {
-                      "type": "string"
-                    },
-                    "createDate": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/contacts": {
-      "post": {
-        "summary": "Create a new contact",
-        "description": "Creates a new contact with the specified details.",
-        "tags": ["Contacts"],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "waProfileName": {
-                    "type": "string"
-                  },
-                  "firstName": {
-                    "type": "string"
-                  },
-                  "lastName": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email"
-                  },
-                  "phone": {
-                    "type": "string"
-                  },
-                  "occupation": {
-                    "type": "string"
-                  },
-                  "gender": {
-                    "type": "string"
-                  },
-                  "birthdate": {
-                    "type": "string",
-                    "format": "date"
-                  },
-                  "age": {
-                    "type": "integer"
-                  },
-                  "notes": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Contact created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/contacts/{contactId}": {
-      "delete": {
-        "summary": "Delete a contact by ID",
-        "description": "Deletes a contact with the specified ID.",
-        "tags": ["Contacts"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "contactId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Contact deleted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    }
-                  }
-                }
-              },
-              "description": "The ID of the deleted contact."
-            }
-          },
-          "404": {
-            "description": "Contact not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Contact not found"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "summary": "Get a contact by ID",
-        "tags": ["Contacts"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "contactId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A contact",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "workspaceId": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "statusId": {
-                      "type": "string",
-                      "format": "uuid",
-                      "nullable": true
-                    },
-                    "waId": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "waProfileName": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "firstName": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "lastName": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "email": {
-                      "type": "string",
-                      "format": "email",
-                      "nullable": true
-                    },
-                    "phone": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "occupation": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "gender": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "birthDate": {
-                      "type": "string",
-                      "format": "date",
-                      "nullable": true
-                    },
-                    "age": {
-                      "type": "integer",
-                      "nullable": true
-                    },
-                    "notes": {
-                      "type": "string",
-                      "nullable": true
-                    },
-                    "createDate": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "updateDate": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update a contact by ID",
-        "description": "Updates a specified contact.",
-        "tags": ["Contacts"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "contactId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "firstName": {
-                    "type": "string"
-                  },
-                  "lastName": {
-                    "type": "string"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email"
-                  },
-                  "phone": {
-                    "type": "string"
-                  },
-                  "occupation": {
-                    "type": "string"
-                  },
-                  "gender": {
-                    "type": "string"
-                  },
-                  "birthdate": {
-                    "type": "string",
-                    "format": "date"
-                  },
-                  "age": {
-                    "type": "integer"
-                  },
-                  "notes": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Contact updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Contact not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "Error message indicating the contact was not found."
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/contacts/": {
-      "get": {
-        "summary": "Get all contacts",
-        "tags": ["Contacts"],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "cursor",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Cursor for pagination"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A list of contacts",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "workspaceId": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "statusId": {
-                            "type": "string",
-                            "format": "uuid",
-                            "nullable": true
-                          },
-                          "waId": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "waProfileName": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "firstName": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "lastName": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "email": {
-                            "type": "string",
-                            "format": "email",
-                            "nullable": true
-                          },
-                          "phone": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "occupation": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "gender": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "birthDate": {
-                            "type": "string",
-                            "format": "date",
-                            "nullable": true
-                          },
-                          "age": {
-                            "type": "integer",
-                            "nullable": true
-                          },
-                          "notes": {
-                            "type": "string",
-                            "nullable": true
-                          },
-                          "createDate": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "updateDate": {
-                            "type": "string",
-                            "format": "date-time"
-                          }
-                        }
-                      }
-                    }
-                  },
-                  "cursors": {
-                    "type": "object",
-                    "properties": {
-                      "next": {
-                        "type": "string",
-                        "nullable": true,
-                        "description": "Cursor for the next page"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/conversations/{conversationId}": {
-      "get": {
-        "summary": "Get a conversation by ID",
-        "tags": ["Conversations"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "conversationId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A contact",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "workspaceId": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "phoneNumberId": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "recipientId": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "assigneeId": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "lastMessageId": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "createDate": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "serviceWindowExpireDate": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/conversations/:conversationId/messages": {
-      "get": {
-        "summary": "Get all messages in a conversation",
-        "tags": ["Conversations"],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "cursor",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Cursor for pagination"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A list of messages",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "workspaceId": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "conversationId": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "assistantId": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "userId": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "broadcastId": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "whatsappMessageId": {
-                            "type": "string"
-                          },
-                          "from": {
-                            "type": "string"
-                          },
-                          "to": {
-                            "type": "string"
-                          },
-                          "role": {
-                            "type": "string"
-                          },
-                          "status": {
-                            "type": "string"
-                          },
-                          "type": {
-                            "type": "string"
-                          },
-                          "content": {
-                            "type": "string"
-                          },
-                          "contentData": {
-                            "type": "object"
-                          },
-                          "toolCallId": {
-                            "type": "string"
-                          },
-                          "toolCalls": {
-                            "type": "string"
-                          },
-                          "data": {
-                            "type": "string"
-                          },
-                          "contextId": {
-                            "type": "string"
-                          },
-                          "contextFrom": {
-                            "type": "string"
-                          },
-                          "createDate": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "sendDate": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "deliverDate": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "readDate": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "promptTokens": {
-                            "type": "string"
-                          },
-                          "completionTokens": {
-                            "type": "string"
-                          },
-                          "order": {
-                            "type": "number"
-                          },
-                          "traceId": {
-                            "type": "string"
-                          }
-                        }
-                      }
-                    },
-                    "cursors": {
-                      "type": "object",
-                      "properties": {
-                        "next": {
-                          "type": "string",
-                          "nullable": true,
-                          "description": "Cursor for newer messages"
-                        },
-                        "prev": {
-                          "type": "string",
-                          "nullable": true,
-                          "description": "Cursor for older messages"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/conversations/": {
-      "get": {
-        "summary": "Get all conversations",
-        "tags": ["Conversations"],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "cursor",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Cursor for pagination"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A list of conversations",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "workspaceId": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "phoneNumberId": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "recipientId": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "assigneeId": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "lastMessageId": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "createDate": {
-                            "type": "string",
-                            "format": "date-time"
-                          },
-                          "serviceWindowExpireDate": {
-                            "type": "string",
-                            "format": "date-time"
-                          }
-                        }
-                      }
-                    },
-                    "cursors": {
-                      "type": "object",
-                      "properties": {
-                        "next": {
-                          "type": "string",
-                          "nullable": true,
-                          "description": "Cursor for the next page"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/conversations/{conversationId}/messages/interactive/order-details": {
-      "post": {
-        "summary": "Send an interactive order details message to a conversation",
-        "tags": ["Conversations"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "conversationId",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "Conversation ID"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "content": {
-                    "type": "object",
-                    "required": ["type", "body", "action"],
-                    "properties": {
-                      "type": {
-                        "type": "string",
-                        "enum": ["order_details"],
-                        "description": "Must be \"order_details\""
-                      },
-                      "body": {
-                        "type": "object",
-                        "required": ["text"],
-                        "properties": {
-                          "text": {
-                            "type": "string",
-                            "description": "Body text of the interactive message"
-                          }
-                        }
-                      },
-                      "action": {
-                        "type": "object",
-                        "required": ["name", "parameters"],
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "enum": ["review_and_pay"]
-                          },
-                          "parameters": {
-                            "type": "object",
-                            "required": [
-                              "reference_id",
-                              "type",
-                              "payment_type",
-                              "payment_settings",
-                              "currency",
-                              "total_amount",
-                              "order"
-                            ],
-                            "properties": {
-                              "reference_id": {
-                                "type": "string",
-                                "description": "Unique reference ID for the order"
-                              },
-                              "type": {
-                                "type": "string",
-                                "enum": ["digital-goods", "physical-goods"]
-                              },
-                              "payment_type": {
-                                "type": "string",
-                                "enum": ["br"]
-                              },
-                              "payment_settings": {
-                                "type": "array",
-                                "description": "Accepted payment methods",
-                                "items": {
-                                  "oneOf": [
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "enum": ["pix_dynamic_code"]
-                                        },
-                                        "pix_dynamic_code": {
-                                          "type": "object",
-                                          "properties": {
-                                            "code": {
-                                              "type": "string"
-                                            }
-                                          }
-                                        }
-                                      }
-                                    },
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "enum": ["payment_link"]
-                                        },
-                                        "payment_link": {
-                                          "type": "object",
-                                          "properties": {
-                                            "uri": {
-                                              "type": "string"
-                                            }
-                                          }
-                                        }
-                                      }
-                                    },
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "type": {
-                                          "type": "string",
-                                          "enum": ["boleto"]
-                                        },
-                                        "boleto": {
-                                          "type": "object",
-                                          "properties": {
-                                            "digitable_line": {
-                                              "type": "string"
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  ]
-                                }
-                              },
-                              "currency": {
-                                "type": "string",
-                                "enum": ["BRL"]
-                              },
-                              "total_amount": {
-                                "type": "object",
-                                "required": ["value", "offset"],
-                                "properties": {
-                                  "value": {
-                                    "type": "number"
-                                  },
-                                  "offset": {
-                                    "type": "number"
-                                  }
-                                }
-                              },
-                              "order": {
-                                "type": "object",
-                                "required": ["status", "items", "subtotal", "tax"],
-                                "properties": {
-                                  "status": {
-                                    "type": "string",
-                                    "enum": ["pending"]
-                                  },
-                                  "catalog_id": {
-                                    "type": "string"
-                                  },
-                                  "expiration": {
-                                    "type": "object",
-                                    "properties": {
-                                      "timestamp": {
-                                        "type": "string"
-                                      },
-                                      "description": {
-                                        "type": "string"
-                                      }
-                                    }
-                                  },
-                                  "items": {
-                                    "type": "array",
-                                    "items": {
-                                      "type": "object",
-                                      "required": ["retailer_id", "name", "amount", "quantity"],
-                                      "properties": {
-                                        "retailer_id": {
-                                          "type": "string"
-                                        },
-                                        "name": {
-                                          "type": "string"
-                                        },
-                                        "amount": {
-                                          "type": "object",
-                                          "required": ["value", "offset"],
-                                          "properties": {
-                                            "value": {
-                                              "type": "number"
-                                            },
-                                            "offset": {
-                                              "type": "number"
-                                            }
-                                          }
-                                        },
-                                        "quantity": {
-                                          "type": "number"
-                                        },
-                                        "sale_amount": {
-                                          "type": "object",
-                                          "properties": {
-                                            "value": {
-                                              "type": "number"
-                                            },
-                                            "offset": {
-                                              "type": "number"
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  },
-                                  "subtotal": {
-                                    "type": "object",
-                                    "required": ["value", "offset"],
-                                    "properties": {
-                                      "value": {
-                                        "type": "number"
-                                      },
-                                      "offset": {
-                                        "type": "number"
-                                      }
-                                    }
-                                  },
-                                  "tax": {
-                                    "type": "object",
-                                    "required": ["value", "offset"],
-                                    "properties": {
-                                      "value": {
-                                        "type": "number"
-                                      },
-                                      "offset": {
-                                        "type": "number"
-                                      },
-                                      "description": {
-                                        "type": "string"
-                                      }
-                                    }
-                                  },
-                                  "shipping": {
-                                    "type": "object",
-                                    "properties": {
-                                      "value": {
-                                        "type": "number"
-                                      },
-                                      "offset": {
-                                        "type": "number"
-                                      },
-                                      "description": {
-                                        "type": "string"
-                                      }
-                                    }
-                                  },
-                                  "discount": {
-                                    "type": "object",
-                                    "properties": {
-                                      "value": {
-                                        "type": "number"
-                                      },
-                                      "offset": {
-                                        "type": "number"
-                                      },
-                                      "description": {
-                                        "type": "string"
-                                      },
-                                      "discount_program_name": {
-                                        "type": "string"
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Interactive order details message sent successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "description": "Message ID"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Conversation not found"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
-    "/conversations/{conversationId}/messages": {
-      "post": {
-        "summary": "Send a message to a conversation",
-        "tags": ["Conversations"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "conversationId",
-            "schema": {
-              "type": "string"
-            },
-            "required": true,
-            "description": "Conversation ID"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "content": {
-                    "type": "string",
-                    "description": "Message content. Required for text messages, optional for media messages."
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": ["text", "image", "document"],
-                    "description": "Message type"
-                  },
-                  "media": {
-                    "type": "object",
-                    "properties": {
-                      "name": {
-                        "type": "string",
-                        "description": "Media file name. Optional."
-                      },
-                      "mimeType": {
-                        "type": "string",
-                        "description": "Media MIME type. Required for media messages."
-                      },
-                      "base64": {
-                        "type": "string",
-                        "description": "Media file content in base64 encoding. Required for media messages."
-                      }
-                    }
-                  }
-                },
-                "required": ["type"]
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Message sent successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid",
-                      "description": "Message ID"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Conversation not found"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
-    "/sources/{sourceId}/chunks": {
-      "post": {
-        "summary": "Create a new chunk",
-        "description": "Creates a new chunk with the specified details.",
-        "tags": ["Embeddings"],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "data": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "sourceType": {
-                          "type": "string"
-                        },
-                        "content": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "An array containing the IDs of the created chunks.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "summary": "Get all chunks for a source",
-        "tags": ["Embeddings"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "sourceId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "The ID of the source to list chunks for"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A list of chunks",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "workspaceId": {
-                            "type": "string",
-                            "format": "uuid"
-                          },
-                          "sourceType": {
-                            "type": "string"
-                          },
-                          "sourceId": {
-                            "type": "string",
-                            "format": "uuid",
-                            "nullable": true
-                          },
-                          "provider": {
-                            "type": "string"
-                          },
-                          "model": {
-                            "type": "string"
-                          },
-                          "content": {
-                            "type": "string"
-                          },
-                          "createDate": {
-                            "type": "string",
-                            "format": "date-time"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sources/{sourceId}/questions": {
-      "post": {
-        "summary": "Create questions and answers to feed a knowledge base source",
-        "tags": ["Embeddings"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "sourceId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "questions": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "question": {
-                          "type": "string"
-                        },
-                        "answer": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Questions created"
-          }
-        }
-      }
-    },
-    "/tags": {
-      "post": {
-        "summary": "Create a new tag",
-        "description": "Creates a new tag with the specified name.",
-        "tags": ["Tags"],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The name of the tag to create."
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Tag created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    }
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "The ID and name of the created tag."
-                  }
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Tag with the specified name already exists",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "Error message indicating the tag already exists."
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "summary": "List all tags",
-        "description": "Retrieves a list of all tags in the workspace.",
-        "tags": ["Tags"],
-        "responses": {
-          "200": {
-            "description": "A list of tags",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "name": {
-                            "type": "string"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/tags/{tagId}": {
-      "delete": {
-        "summary": "Delete a tag by ID",
-        "description": "Deletes a tag with the specified ID.",
-        "tags": ["Tags"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "tagId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Tag deleted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "name": {
-                      "type": "string"
-                    }
-                  }
-                }
-              },
-              "description": "The ID and name of the deleted tag."
-            }
-          },
-          "404": {
-            "description": "Tag not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Tag not found"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "summary": "Get a tag by ID",
-        "description": "Retrieves a tag with the specified ID.",
-        "tags": ["Tags"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "tagId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Tag details",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "The name of the tag."
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Tag not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Tag with id {tagId} not found"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update a tag by ID",
-        "description": "Updates the name of a tag with the specified ID.",
-        "tags": ["Tags"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "tagId",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "The new name for the tag."
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Tag updated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "name": {
-                      "type": "string",
-                      "description": "The new name for the tag."
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Tag not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "Error message indicating the tag was not found."
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "Tag with the specified name already exists",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "Error message indicating the tag name already exists."
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "tags": []
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Cogfy Messenger Public API",
+		"version": "1.0.0",
+		"description": "API for interacting with the Cogfy Messenger platform"
+	},
+	"components": {
+		"securitySchemes": {
+			"ApiKeyAuth": {
+				"type": "apiKey",
+				"in": "header",
+				"name": "api-key"
+			}
+		}
+	},
+	"security": [
+		{
+			"ApiKeyAuth": []
+		}
+	],
+	"servers": [
+		{
+			"url": "https://messenger-public-api.cogfy.com",
+			"description": "Production server"
+		},
+		{
+			"url": "http://localhost:3276",
+			"description": "Local server"
+		}
+	],
+	"paths": {
+		"/broadcasts": {
+			"post": {
+				"summary": "Create a new broadcast",
+				"description": "Creates a new broadcast with the specified phone number and contacts query.",
+				"tags": ["Broadcasts"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"type": {
+										"type": "string",
+										"enum": ["text"],
+										"description": "The type of the broadcast message."
+									},
+									"title": {
+										"type": "string",
+										"maxLength": 100,
+										"description": "The title of the broadcast message."
+									},
+									"content": {
+										"type": "string",
+										"maxLength": 1024,
+										"description": "The content of the broadcast message."
+									},
+									"phoneNumberId": {
+										"type": "string",
+										"format": "uuid",
+										"description": "The ID of the phone number to use for the broadcast."
+									},
+									"contactsQuery": {
+										"type": "object",
+										"properties": {
+											"tags": {
+												"type": "array",
+												"items": {
+													"type": "object",
+													"properties": {
+														"id": {
+															"type": "string",
+															"format": "uuid"
+														},
+														"name": {
+															"type": "string",
+															"description": "The tags to filter contacts for the broadcast."
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						},
+						"responses": {
+							"201": {
+								"description": "Broadcast created successfully",
+								"content": {
+									"application/json": {
+										"schema": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string",
+													"format": "uuid",
+													"description": "The ID of the created broadcast."
+												}
+											}
+										}
+									}
+								}
+							},
+							"400": {
+								"description": "Bad request, invalid input data"
+							},
+							"404": {
+								"description": "Phone number not found"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"summary": "List all broadcasts",
+				"tags": ["Broadcasts"],
+				"responses": {
+					"200": {
+						"description": "A list of broadcasts",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"status": {
+														"type": "string",
+														"enum": ["pending", "sent"]
+													},
+													"createDate": {
+														"type": "string",
+														"format": "date-time"
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/broadcasts/{broadcastId}": {
+			"get": {
+				"summary": "Get a broadcast by ID",
+				"tags": ["Broadcasts"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "broadcastId",
+						"required": true
+					}
+				],
+				"schema": {
+					"type": "string",
+					"format": "uuid"
+				},
+				"responses": {
+					"200": {
+						"description": "Broadcast details",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"status": {
+											"type": "string",
+											"enum": ["pending", "sent"]
+										},
+										"createDate": {
+											"type": "string",
+											"format": "date-time"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/broadcasts/{broadcastId}/send": {
+			"post": {
+				"summary": "Send a broadcast by ID",
+				"tags": ["Broadcasts"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "broadcastId",
+						"required": true
+					}
+				],
+				"schema": {
+					"type": "string",
+					"format": "uuid"
+				},
+				"responses": {
+					"204": {
+						"description": "Broadcast sent successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object"
+								},
+								"properties": {
+									"message": {
+										"type": "string",
+										"description": "Broadcast sent successfully"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/chunks/{chunkId}": {
+			"delete": {
+				"summary": "Delete a chunk by ID",
+				"description": "Deletes a chunk with the specified ID.",
+				"tags": ["Embeddings"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "chunkId",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Chunk deleted successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid"
+										}
+									}
+								}
+							},
+							"description": "The ID of the deleted chunk."
+						}
+					},
+					"404": {
+						"description": "Chunk not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Chunk not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"summary": "Get a chunk by ID",
+				"tags": ["Embeddings"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "chunkId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An embedding chunk",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"workspaceId": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"sourceType": {
+											"type": "string"
+										},
+										"sourceId": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"provider": {
+											"type": "string"
+										},
+										"model": {
+											"type": "string"
+										},
+										"content": {
+											"type": "string"
+										},
+										"embedding": {
+											"type": "array",
+											"items": {
+												"type": "number"
+											}
+										},
+										"metadata": {
+											"type": "string"
+										},
+										"createDate": {
+											"type": "string",
+											"format": "date-time"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/contacts": {
+			"post": {
+				"summary": "Create a new contact",
+				"description": "Creates a new contact with the specified details.",
+				"tags": ["Contacts"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"waProfileName": {
+										"type": "string"
+									},
+									"firstName": {
+										"type": "string"
+									},
+									"lastName": {
+										"type": "string"
+									},
+									"email": {
+										"type": "string",
+										"format": "email"
+									},
+									"phone": {
+										"type": "string"
+									},
+									"occupation": {
+										"type": "string"
+									},
+									"gender": {
+										"type": "string"
+									},
+									"birthdate": {
+										"type": "string",
+										"format": "date"
+									},
+									"age": {
+										"type": "integer"
+									},
+									"notes": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Contact created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/contacts/{contactId}": {
+			"delete": {
+				"summary": "Delete a contact by ID",
+				"description": "Deletes a contact with the specified ID.",
+				"tags": ["Contacts"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "contactId",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Contact deleted successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid"
+										}
+									}
+								}
+							},
+							"description": "The ID of the deleted contact."
+						}
+					},
+					"404": {
+						"description": "Contact not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Contact not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"summary": "Get a contact by ID",
+				"tags": ["Contacts"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "contactId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "A contact",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"workspaceId": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"statusId": {
+											"type": "string",
+											"format": "uuid",
+											"nullable": true
+										},
+										"waId": {
+											"type": "string",
+											"nullable": true
+										},
+										"waProfileName": {
+											"type": "string",
+											"nullable": true
+										},
+										"firstName": {
+											"type": "string",
+											"nullable": true
+										},
+										"lastName": {
+											"type": "string",
+											"nullable": true
+										},
+										"email": {
+											"type": "string",
+											"format": "email",
+											"nullable": true
+										},
+										"phone": {
+											"type": "string",
+											"nullable": true
+										},
+										"occupation": {
+											"type": "string",
+											"nullable": true
+										},
+										"gender": {
+											"type": "string",
+											"nullable": true
+										},
+										"birthDate": {
+											"type": "string",
+											"format": "date",
+											"nullable": true
+										},
+										"age": {
+											"type": "integer",
+											"nullable": true
+										},
+										"notes": {
+											"type": "string",
+											"nullable": true
+										},
+										"createDate": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"updateDate": {
+											"type": "string",
+											"format": "date-time"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"patch": {
+				"summary": "Update a contact by ID",
+				"description": "Updates a specified contact.",
+				"tags": ["Contacts"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "contactId",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"firstName": {
+										"type": "string"
+									},
+									"lastName": {
+										"type": "string"
+									},
+									"email": {
+										"type": "string",
+										"format": "email"
+									},
+									"phone": {
+										"type": "string"
+									},
+									"occupation": {
+										"type": "string"
+									},
+									"gender": {
+										"type": "string"
+									},
+									"birthdate": {
+										"type": "string",
+										"format": "date"
+									},
+									"age": {
+										"type": "integer"
+									},
+									"notes": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Contact updated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Contact not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"description": "Error message indicating the contact was not found."
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/contacts/": {
+			"get": {
+				"summary": "Get all contacts",
+				"tags": ["Contacts"],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "cursor",
+						"schema": {
+							"type": "string"
+						},
+						"description": "Cursor for pagination"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "A list of contacts",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"workspaceId": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"statusId": {
+														"type": "string",
+														"format": "uuid",
+														"nullable": true
+													},
+													"waId": {
+														"type": "string",
+														"nullable": true
+													},
+													"waProfileName": {
+														"type": "string",
+														"nullable": true
+													},
+													"firstName": {
+														"type": "string",
+														"nullable": true
+													},
+													"lastName": {
+														"type": "string",
+														"nullable": true
+													},
+													"email": {
+														"type": "string",
+														"format": "email",
+														"nullable": true
+													},
+													"phone": {
+														"type": "string",
+														"nullable": true
+													},
+													"occupation": {
+														"type": "string",
+														"nullable": true
+													},
+													"gender": {
+														"type": "string",
+														"nullable": true
+													},
+													"birthDate": {
+														"type": "string",
+														"format": "date",
+														"nullable": true
+													},
+													"age": {
+														"type": "integer",
+														"nullable": true
+													},
+													"notes": {
+														"type": "string",
+														"nullable": true
+													},
+													"createDate": {
+														"type": "string",
+														"format": "date-time"
+													},
+													"updateDate": {
+														"type": "string",
+														"format": "date-time"
+													}
+												}
+											}
+										}
+									},
+									"cursors": {
+										"type": "object",
+										"properties": {
+											"next": {
+												"type": "string",
+												"nullable": true,
+												"description": "Cursor for the next page"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/conversations/{conversationId}": {
+			"get": {
+				"summary": "Get a conversation by ID",
+				"tags": ["Conversations"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "conversationId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "A contact",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"workspaceId": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"phoneNumberId": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"recipientId": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"assigneeId": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"lastMessageId": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"createDate": {
+											"type": "string",
+											"format": "date-time"
+										},
+										"serviceWindowExpireDate": {
+											"type": "string",
+											"format": "date-time"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/conversations/:conversationId/messages": {
+			"get": {
+				"summary": "Get all messages in a conversation",
+				"tags": ["Conversations"],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "cursor",
+						"schema": {
+							"type": "string"
+						},
+						"description": "Cursor for pagination"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "A list of messages",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"workspaceId": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"conversationId": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"assistantId": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"userId": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"broadcastId": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"whatsappMessageId": {
+														"type": "string"
+													},
+													"from": {
+														"type": "string"
+													},
+													"to": {
+														"type": "string"
+													},
+													"role": {
+														"type": "string"
+													},
+													"status": {
+														"type": "string"
+													},
+													"type": {
+														"type": "string"
+													},
+													"content": {
+														"type": "string"
+													},
+													"contentData": {
+														"type": "object"
+													},
+													"toolCallId": {
+														"type": "string"
+													},
+													"toolCalls": {
+														"type": "string"
+													},
+													"data": {
+														"type": "string"
+													},
+													"contextId": {
+														"type": "string"
+													},
+													"contextFrom": {
+														"type": "string"
+													},
+													"createDate": {
+														"type": "string",
+														"format": "date-time"
+													},
+													"sendDate": {
+														"type": "string",
+														"format": "date-time"
+													},
+													"deliverDate": {
+														"type": "string",
+														"format": "date-time"
+													},
+													"readDate": {
+														"type": "string",
+														"format": "date-time"
+													},
+													"promptTokens": {
+														"type": "string"
+													},
+													"completionTokens": {
+														"type": "string"
+													},
+													"order": {
+														"type": "number"
+													},
+													"traceId": {
+														"type": "string"
+													}
+												}
+											}
+										},
+										"cursors": {
+											"type": "object",
+											"properties": {
+												"next": {
+													"type": "string",
+													"nullable": true,
+													"description": "Cursor for newer messages"
+												},
+												"prev": {
+													"type": "string",
+													"nullable": true,
+													"description": "Cursor for older messages"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/conversations/": {
+			"get": {
+				"summary": "Get all conversations",
+				"tags": ["Conversations"],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "cursor",
+						"schema": {
+							"type": "string"
+						},
+						"description": "Cursor for pagination"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "A list of conversations",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"workspaceId": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"phoneNumberId": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"recipientId": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"assigneeId": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"lastMessageId": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"createDate": {
+														"type": "string",
+														"format": "date-time"
+													},
+													"serviceWindowExpireDate": {
+														"type": "string",
+														"format": "date-time"
+													}
+												}
+											}
+										},
+										"cursors": {
+											"type": "object",
+											"properties": {
+												"next": {
+													"type": "string",
+													"nullable": true,
+													"description": "Cursor for the next page"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/conversations/{conversationId}/messages/interactive/order-details": {
+			"post": {
+				"summary": "Send an interactive order details message to a conversation",
+				"tags": ["Conversations"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "conversationId",
+						"schema": {
+							"type": "string"
+						},
+						"required": true,
+						"description": "Conversation ID"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"content": {
+										"type": "object",
+										"required": ["type", "body", "action"],
+										"properties": {
+											"type": {
+												"type": "string",
+												"enum": ["order_details"],
+												"description": "Must be \"order_details\""
+											},
+											"body": {
+												"type": "object",
+												"required": ["text"],
+												"properties": {
+													"text": {
+														"type": "string",
+														"description": "Body text of the interactive message"
+													}
+												}
+											},
+											"action": {
+												"type": "object",
+												"required": ["name", "parameters"],
+												"properties": {
+													"name": {
+														"type": "string",
+														"enum": ["review_and_pay"]
+													},
+													"parameters": {
+														"type": "object",
+														"required": [
+															"reference_id",
+															"type",
+															"payment_type",
+															"payment_settings",
+															"currency",
+															"total_amount",
+															"order"
+														],
+														"properties": {
+															"reference_id": {
+																"type": "string",
+																"description": "Unique reference ID for the order"
+															},
+															"type": {
+																"type": "string",
+																"enum": ["digital-goods", "physical-goods"]
+															},
+															"payment_type": {
+																"type": "string",
+																"enum": ["br"]
+															},
+															"payment_settings": {
+																"type": "array",
+																"description": "Accepted payment methods",
+																"items": {
+																	"oneOf": [
+																		{
+																			"type": "object",
+																			"properties": {
+																				"type": {
+																					"type": "string",
+																					"enum": ["pix_dynamic_code"]
+																				},
+																				"pix_dynamic_code": {
+																					"type": "object",
+																					"properties": {
+																						"code": {
+																							"type": "string"
+																						}
+																					}
+																				}
+																			}
+																		},
+																		{
+																			"type": "object",
+																			"properties": {
+																				"type": {
+																					"type": "string",
+																					"enum": ["payment_link"]
+																				},
+																				"payment_link": {
+																					"type": "object",
+																					"properties": {
+																						"uri": {
+																							"type": "string"
+																						}
+																					}
+																				}
+																			}
+																		},
+																		{
+																			"type": "object",
+																			"properties": {
+																				"type": {
+																					"type": "string",
+																					"enum": ["boleto"]
+																				},
+																				"boleto": {
+																					"type": "object",
+																					"properties": {
+																						"digitable_line": {
+																							"type": "string"
+																						}
+																					}
+																				}
+																			}
+																		}
+																	]
+																}
+															},
+															"currency": {
+																"type": "string",
+																"enum": ["BRL"]
+															},
+															"total_amount": {
+																"type": "object",
+																"required": ["value", "offset"],
+																"properties": {
+																	"value": {
+																		"type": "number"
+																	},
+																	"offset": {
+																		"type": "number"
+																	}
+																}
+															},
+															"order": {
+																"type": "object",
+																"required": [
+																	"status",
+																	"items",
+																	"subtotal",
+																	"tax"
+																],
+																"properties": {
+																	"status": {
+																		"type": "string",
+																		"enum": ["pending"]
+																	},
+																	"catalog_id": {
+																		"type": "string"
+																	},
+																	"expiration": {
+																		"type": "object",
+																		"properties": {
+																			"timestamp": {
+																				"type": "string"
+																			},
+																			"description": {
+																				"type": "string"
+																			}
+																		}
+																	},
+																	"items": {
+																		"type": "array",
+																		"items": {
+																			"type": "object",
+																			"required": [
+																				"retailer_id",
+																				"name",
+																				"amount",
+																				"quantity"
+																			],
+																			"properties": {
+																				"retailer_id": {
+																					"type": "string"
+																				},
+																				"name": {
+																					"type": "string"
+																				},
+																				"amount": {
+																					"type": "object",
+																					"required": ["value", "offset"],
+																					"properties": {
+																						"value": {
+																							"type": "number"
+																						},
+																						"offset": {
+																							"type": "number"
+																						}
+																					}
+																				},
+																				"quantity": {
+																					"type": "number"
+																				},
+																				"sale_amount": {
+																					"type": "object",
+																					"properties": {
+																						"value": {
+																							"type": "number"
+																						},
+																						"offset": {
+																							"type": "number"
+																						}
+																					}
+																				}
+																			}
+																		}
+																	},
+																	"subtotal": {
+																		"type": "object",
+																		"required": ["value", "offset"],
+																		"properties": {
+																			"value": {
+																				"type": "number"
+																			},
+																			"offset": {
+																				"type": "number"
+																			}
+																		}
+																	},
+																	"tax": {
+																		"type": "object",
+																		"required": ["value", "offset"],
+																		"properties": {
+																			"value": {
+																				"type": "number"
+																			},
+																			"offset": {
+																				"type": "number"
+																			},
+																			"description": {
+																				"type": "string"
+																			}
+																		}
+																	},
+																	"shipping": {
+																		"type": "object",
+																		"properties": {
+																			"value": {
+																				"type": "number"
+																			},
+																			"offset": {
+																				"type": "number"
+																			},
+																			"description": {
+																				"type": "string"
+																			}
+																		}
+																	},
+																	"discount": {
+																		"type": "object",
+																		"properties": {
+																			"value": {
+																				"type": "number"
+																			},
+																			"offset": {
+																				"type": "number"
+																			},
+																			"description": {
+																				"type": "string"
+																			},
+																			"discount_program_name": {
+																				"type": "string"
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Interactive order details message sent successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid",
+											"description": "Message ID"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad request"
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Conversation not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/conversations/{conversationId}/messages": {
+			"post": {
+				"summary": "Send a message to a conversation",
+				"tags": ["Conversations"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "conversationId",
+						"schema": {
+							"type": "string"
+						},
+						"required": true,
+						"description": "Conversation ID"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"content": {
+										"type": "string",
+										"description": "Message content. Required for text messages, optional for media messages."
+									},
+									"type": {
+										"type": "string",
+										"enum": ["text", "image", "document"],
+										"description": "Message type"
+									},
+									"media": {
+										"type": "object",
+										"properties": {
+											"name": {
+												"type": "string",
+												"description": "Media file name. Optional."
+											},
+											"mimeType": {
+												"type": "string",
+												"description": "Media MIME type. Required for media messages."
+											},
+											"base64": {
+												"type": "string",
+												"description": "Media file content in base64 encoding. Required for media messages."
+											}
+										}
+									}
+								},
+								"required": ["type"]
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Message sent successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid",
+											"description": "Message ID"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad request"
+					},
+					"401": {
+						"description": "Unauthorized"
+					},
+					"403": {
+						"description": "Forbidden"
+					},
+					"404": {
+						"description": "Conversation not found"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/sources/{sourceId}/chunks": {
+			"post": {
+				"summary": "Create a new chunk",
+				"description": "Creates a new chunk with the specified details.",
+				"tags": ["Embeddings"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"data": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"sourceType": {
+													"type": "string"
+												},
+												"content": {
+													"type": "string"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "An array containing the IDs of the created chunks.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"summary": "Get all chunks for a source",
+				"tags": ["Embeddings"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "sourceId",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						},
+						"description": "The ID of the source to list chunks for"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "A list of chunks",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"workspaceId": {
+														"type": "string",
+														"format": "uuid"
+													},
+													"sourceType": {
+														"type": "string"
+													},
+													"sourceId": {
+														"type": "string",
+														"format": "uuid",
+														"nullable": true
+													},
+													"provider": {
+														"type": "string"
+													},
+													"model": {
+														"type": "string"
+													},
+													"content": {
+														"type": "string"
+													},
+													"createDate": {
+														"type": "string",
+														"format": "date-time"
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/sources/{sourceId}/questions": {
+			"post": {
+				"summary": "Create questions and answers to feed a knowledge base source",
+				"tags": ["Embeddings"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "sourceId",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"questions": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"question": {
+													"type": "string"
+												},
+												"answer": {
+													"type": "string"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Questions created"
+					}
+				}
+			}
+		},
+		"/tags": {
+			"post": {
+				"summary": "Create a new tag",
+				"description": "Creates a new tag with the specified name.",
+				"tags": ["Tags"],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "The name of the tag to create."
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "Tag created successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid"
+										}
+									},
+									"name": {
+										"type": "string",
+										"description": "The ID and name of the created tag."
+									}
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Tag with the specified name already exists",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"description": "Error message indicating the tag already exists."
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"summary": "List all tags",
+				"description": "Retrieves a list of all tags in the workspace.",
+				"tags": ["Tags"],
+				"responses": {
+					"200": {
+						"description": "A list of tags",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string"
+													},
+													"name": {
+														"type": "string"
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/tags/{tagId}": {
+			"delete": {
+				"summary": "Delete a tag by ID",
+				"description": "Deletes a tag with the specified ID.",
+				"tags": ["Tags"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "tagId",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Tag deleted successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"name": {
+											"type": "string"
+										}
+									}
+								}
+							},
+							"description": "The ID and name of the deleted tag."
+						}
+					},
+					"404": {
+						"description": "Tag not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Tag not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"summary": "Get a tag by ID",
+				"description": "Retrieves a tag with the specified ID.",
+				"tags": ["Tags"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "tagId",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Tag details",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"name": {
+											"type": "string",
+											"description": "The name of the tag."
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Tag not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "Tag with id {tagId} not found"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"patch": {
+				"summary": "Update a tag by ID",
+				"description": "Updates the name of a tag with the specified ID.",
+				"tags": ["Tags"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "tagId",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"format": "uuid"
+						}
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "The new name for the tag."
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Tag updated successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"format": "uuid"
+										},
+										"name": {
+											"type": "string",
+											"description": "The new name for the tag."
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Tag not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"description": "Error message indicating the tag was not found."
+										}
+									}
+								}
+							}
+						}
+					},
+					"409": {
+						"description": "Tag with the specified name already exists",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"description": "Error message indicating the tag name already exists."
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"tags": []
 }
