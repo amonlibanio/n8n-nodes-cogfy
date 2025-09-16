@@ -1,0 +1,63 @@
+{
+  "name": "@amonlibanio/n8n-nodes-cogfy",
+  "version": "1.0.0",
+  "description": "n8n node to connect with Cogfy",
+  "keywords": [
+    "n8n-community-node-package"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "author": {
+    "name": "Amon Libanio",
+    "email": "amonlibanio@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amonlibanio/n8n-nodes-cogfy.git"
+  },
+  "engines": {
+    "node": ">=22",
+    "bun": ">=1.2.22"
+  },
+  "packageManager": "bun@1.2.22",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "bun run tsc && bun run build-utils.js",
+    "dev": "bun run tsc --watch",
+    "test": "bun test",
+    "format": "bun run biome format --write .",
+    "lint": "bun run biome lint . && bun run eslint nodes credentials",
+    "lintfix": "bun run biome check --write . && bun run eslint nodes credentials --fix",
+    "check": "bun run biome check . && bun run eslint nodes credentials"
+  },
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/CogfyMessengerApi.credentials.js",
+      "dist/credentials/CogfyTablesApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/CogfyMessenger/CogfyMessenger.node.js",
+      "dist/nodes/CogfyTables/CogfyTables.node.js"
+    ]
+  },
+  "dependencies": {
+    "n8n-workflow": "^1.82.0",
+    "@amonlibanio/n8n-openapi-node": "^1.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.4",
+    "@eslint/js": "^9.35.0",
+    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "@typescript-eslint/parser": "^8.44.0",
+    "eslint": "^9.35.0",
+    "eslint-plugin-n8n-nodes-base": "^1.16.3",
+    "openapi-types": "^12.1.3",
+    "typescript": "^5.9.2",
+    "@types/bun": "latest"
+  }
+}
