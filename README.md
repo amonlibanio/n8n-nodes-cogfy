@@ -1,7 +1,9 @@
 # n8n Cogfy Nodes
 
+[![Publish Package to npm](https://github.com/amonlibanio/n8n-nodes-cogfy/actions/workflows/publish.yaml/badge.svg)](https://github.com/amonlibanio/n8n-nodes-cogfy/actions/workflows/publish.yaml)
+
 <p align="center">
-  <img src="./public/cogfy.png" width='150px'/>
+  <img src="./public/cogfy.svg" width='150px'/>
 </p>
 
 n8n community nodes for Cogfy integration.
@@ -10,6 +12,7 @@ n8n community nodes for Cogfy integration.
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Screenshots](#screenshots)
 - [Development](#development)
 
 ## Installation
@@ -28,18 +31,35 @@ Install the community node package in your n8n instance:
    - **CogfyMessenger** - For messaging operations
    - **CogfyTables** - For database operations
 
+## Screenshots
+
+### Credentials Setup
+<p align="center">
+  <img src="./public/screenshots/cogfyCredentials.png" width='600px'/>
+</p>
+
+### CogfyMessenger Node
+<p align="center">
+  <img src="./public/screenshots/cogfyMessenger.png" width='600px'/>
+</p>
+
+### CogfyTables Node
+<p align="center">
+  <img src="./public/screenshots/cogfyTables.png" width='600px'/>
+</p>
+
 ## Development
 
 ```bash
 # Install dependencies
-bun install
+npm install
 
 # Build the project
-bun run build
+npm run build
 
 # Run tests
-bun test
+npm test
 
 # Development mode
-bun run dev
+npm run dev
 ```
