@@ -1,10 +1,13 @@
-import { N8NPropertiesBuilder, type N8NPropertiesBuilderConfig } from '@devlikeapro/n8n-openapi-node';
+import {
+  N8NPropertiesBuilder,
+  type N8NPropertiesBuilderConfig,
+} from '@devlikeapro/n8n-openapi-node';
 import type { INodeType, INodeTypeDescription, NodeConnectionType } from 'n8n-workflow';
 import * as doc from './openapi.json';
 
-const config: N8NPropertiesBuilderConfig = {}
+const config: N8NPropertiesBuilderConfig = {};
 const parser = new N8NPropertiesBuilder(doc, config);
-const properties = parser.build()
+const properties = parser.build();
 
 export class CogfyMessenger implements INodeType {
   description: INodeTypeDescription = {
