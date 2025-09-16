@@ -65,10 +65,10 @@ async function createDistPackageJson() {
     const packageJson = JSON.parse(readFileSync(sourcePackagePath, 'utf8'));
 
     // Remove the "type": "module" field for n8n compatibility
-    delete packageJson.type;
+    const { type: _type, ...packageJsonWithoutType } = packageJson;
 
     // Write the modified package.json to dist folder
-    writeFileSync(destPackagePath, JSON.stringify(packageJson, null, 2));
+    writeFileSync(destPackagePath, JSON.stringify(packageJsonWithoutType, null, 2));
     console.log('Created dist package.json without type: module');
   }
 }
