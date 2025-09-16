@@ -5,20 +5,6 @@
     "version": "1.0.0",
     "description": "API for interacting with the Cogfy Messenger platform"
   },
-  "components": {
-    "securitySchemes": {
-      "ApiKeyAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "api-key"
-      }
-    }
-  },
-  "security": [
-    {
-      "ApiKeyAuth": []
-    }
-  ],
   "servers": [
     {
       "url": "https://messenger-public-api.cogfy.com",
@@ -29,14 +15,16 @@
       "description": "Local server"
     }
   ],
+  "tags": [],
   "paths": {
     "/broadcasts": {
       "post": {
+        "tags": ["Broadcasts"],
         "summary": "Create a new broadcast",
         "description": "Creates a new broadcast with the specified phone number and contacts query.",
-        "tags": ["Broadcasts"],
+        "operationId": "createBroadcast",
         "requestBody": {
-          "required": true,
+          "description": "Create a new broadcast in the store",
           "content": {
             "application/json": {
               "schema": {
@@ -87,7 +75,8 @@
                 }
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
@@ -116,8 +105,10 @@
         }
       },
       "get": {
-        "summary": "List all broadcasts",
         "tags": ["Broadcasts"],
+        "summary": "List all broadcasts",
+        "description": "Retrieves a list of all broadcasts",
+        "operationId": "listBroadcasts",
         "responses": {
           "200": {
             "description": "A list of broadcasts",
@@ -156,12 +147,15 @@
     },
     "/broadcasts/{broadcastId}": {
       "get": {
-        "summary": "Get a broadcast by ID",
         "tags": ["Broadcasts"],
+        "summary": "Get a broadcast by ID",
+        "description": "Returns a single broadcast",
+        "operationId": "getBroadcastById",
         "parameters": [
           {
-            "in": "path",
             "name": "broadcastId",
+            "in": "path",
+            "description": "ID of broadcast to return",
             "required": true,
             "schema": {
               "type": "string",
@@ -193,14 +187,20 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Broadcast not found"
           }
         }
       }
     },
     "/broadcasts/{broadcastId}/send": {
       "post": {
-        "summary": "Send a broadcast by ID",
         "tags": ["Broadcasts"],
+        "summary": "Send a broadcast by ID",
         "parameters": [
           {
             "in": "path",
@@ -229,14 +229,15 @@
               }
             }
           }
-        }
+        },
+        "operationId": "sendabroadcastbyid"
       }
     },
     "/chunks/{chunkId}": {
       "delete": {
+        "tags": ["Embeddings"],
         "summary": "Delete a chunk by ID",
         "description": "Deletes a chunk with the specified ID.",
-        "tags": ["Embeddings"],
         "parameters": [
           {
             "in": "path",
@@ -282,11 +283,12 @@
               }
             }
           }
-        }
+        },
+        "operationId": "deleteachunkbyid"
       },
       "get": {
-        "summary": "Get a chunk by ID",
         "tags": ["Embeddings"],
+        "summary": "Get a chunk by ID",
         "parameters": [
           {
             "in": "path",
@@ -347,14 +349,15 @@
               }
             }
           }
-        }
+        },
+        "operationId": "getachunkbyid"
       }
     },
     "/contacts": {
       "post": {
+        "tags": ["Contacts"],
         "summary": "Create a new contact",
         "description": "Creates a new contact with the specified details.",
-        "tags": ["Contacts"],
         "requestBody": {
           "required": true,
           "content": {
@@ -416,14 +419,15 @@
               }
             }
           }
-        }
+        },
+        "operationId": "createanewcontact"
       }
     },
     "/contacts/{contactId}": {
       "delete": {
+        "tags": ["Contacts"],
         "summary": "Delete a contact by ID",
         "description": "Deletes a contact with the specified ID.",
-        "tags": ["Contacts"],
         "parameters": [
           {
             "in": "path",
@@ -469,11 +473,12 @@
               }
             }
           }
-        }
+        },
+        "operationId": "deleteacontactbyid"
       },
       "get": {
-        "summary": "Get a contact by ID",
         "tags": ["Contacts"],
+        "summary": "Get a contact by ID",
         "parameters": [
           {
             "in": "path",
@@ -564,12 +569,13 @@
               }
             }
           }
-        }
+        },
+        "operationId": "getacontactbyid"
       },
       "patch": {
+        "tags": ["Contacts"],
         "summary": "Update a contact by ID",
         "description": "Updates a specified contact.",
-        "tags": ["Contacts"],
         "parameters": [
           {
             "in": "path",
@@ -655,13 +661,14 @@
               }
             }
           }
-        }
+        },
+        "operationId": "updateacontactbyid"
       }
     },
     "/contacts/": {
       "get": {
-        "summary": "Get all contacts",
         "tags": ["Contacts"],
+        "summary": "Get all contacts",
         "parameters": [
           {
             "in": "query",
@@ -770,13 +777,14 @@
               }
             }
           }
-        }
+        },
+        "operationId": "getallcontacts"
       }
     },
     "/conversations/{conversationId}": {
       "get": {
-        "summary": "Get a conversation by ID",
         "tags": ["Conversations"],
+        "summary": "Get a conversation by ID",
         "parameters": [
           {
             "in": "path",
@@ -832,13 +840,14 @@
               }
             }
           }
-        }
+        },
+        "operationId": "getaconversationbyid"
       }
     },
     "/conversations/{conversationId}/messages": {
       "get": {
-        "summary": "Get all messages in a conversation",
         "tags": ["Conversations"],
+        "summary": "Get all messages in a conversation",
         "parameters": [
           {
             "in": "path",
@@ -986,11 +995,12 @@
               }
             }
           }
-        }
+        },
+        "operationId": "getallmessagesinaconversation"
       },
       "post": {
-        "summary": "Send a message to a conversation",
         "tags": ["Conversations"],
+        "summary": "Send a message to a conversation",
         "parameters": [
           {
             "in": "path",
@@ -1075,13 +1085,14 @@
           "500": {
             "description": "Internal server error"
           }
-        }
+        },
+        "operationId": "sendamessagetoaconversation"
       }
     },
     "/conversations/": {
       "get": {
-        "summary": "Get all conversations",
         "tags": ["Conversations"],
+        "summary": "Get all conversations",
         "parameters": [
           {
             "in": "query",
@@ -1155,13 +1166,14 @@
               }
             }
           }
-        }
+        },
+        "operationId": "getallconversations"
       }
     },
     "/conversations/{conversationId}/messages/interactive/order-details": {
       "post": {
-        "summary": "Send an interactive order details message to a conversation",
         "tags": ["Conversations"],
+        "summary": "Send an interactive order details message to a conversation",
         "parameters": [
           {
             "in": "path",
@@ -1473,14 +1485,15 @@
           "500": {
             "description": "Internal server error"
           }
-        }
+        },
+        "operationId": "sendaninteractiveorderdetailsmessagetoaconversation"
       }
     },
     "/sources/{sourceId}/chunks": {
       "post": {
+        "tags": ["Embeddings"],
         "summary": "Create a new chunk",
         "description": "Creates a new chunk with the specified details.",
-        "tags": ["Embeddings"],
         "requestBody": {
           "required": true,
           "content": {
@@ -1522,11 +1535,12 @@
               }
             }
           }
-        }
+        },
+        "operationId": "createanewchunk"
       },
       "get": {
-        "summary": "Get all chunks for a source",
         "tags": ["Embeddings"],
+        "summary": "Get all chunks for a source",
         "parameters": [
           {
             "in": "path",
@@ -1589,13 +1603,14 @@
               }
             }
           }
-        }
+        },
+        "operationId": "getallchunksforasource"
       }
     },
     "/sources/{sourceId}/questions": {
       "post": {
-        "summary": "Create questions and answers to feed a knowledge base source",
         "tags": ["Embeddings"],
+        "summary": "Create questions and answers to feed a knowledge base source",
         "parameters": [
           {
             "in": "path",
@@ -1638,14 +1653,15 @@
           "201": {
             "description": "Questions created"
           }
-        }
+        },
+        "operationId": "createquestionsandanswerstofeedaknowledgebasesource"
       }
     },
     "/tags": {
       "post": {
+        "tags": ["Tags"],
         "summary": "Create a new tag",
         "description": "Creates a new tag with the specified name.",
-        "tags": ["Tags"],
         "requestBody": {
           "required": true,
           "content": {
@@ -1700,12 +1716,13 @@
               }
             }
           }
-        }
+        },
+        "operationId": "createanewtag"
       },
       "get": {
+        "tags": ["Tags"],
         "summary": "List all tags",
         "description": "Retrieves a list of all tags in the workspace.",
-        "tags": ["Tags"],
         "responses": {
           "200": {
             "description": "A list of tags",
@@ -1733,14 +1750,15 @@
               }
             }
           }
-        }
+        },
+        "operationId": "listalltags"
       }
     },
     "/tags/{tagId}": {
       "delete": {
+        "tags": ["Tags"],
         "summary": "Delete a tag by ID",
         "description": "Deletes a tag with the specified ID.",
-        "tags": ["Tags"],
         "parameters": [
           {
             "in": "path",
@@ -1789,12 +1807,13 @@
               }
             }
           }
-        }
+        },
+        "operationId": "deleteatagbyid"
       },
       "get": {
+        "tags": ["Tags"],
         "summary": "Get a tag by ID",
         "description": "Retrieves a tag with the specified ID.",
-        "tags": ["Tags"],
         "parameters": [
           {
             "in": "path",
@@ -1843,12 +1862,13 @@
               }
             }
           }
-        }
+        },
+        "operationId": "getatagbyid"
       },
       "patch": {
+        "tags": ["Tags"],
         "summary": "Update a tag by ID",
         "description": "Updates the name of a tag with the specified ID.",
-        "tags": ["Tags"],
         "parameters": [
           {
             "in": "path",
@@ -1930,9 +1950,23 @@
               }
             }
           }
-        }
+        },
+        "operationId": "updateatagbyid"
       }
     }
   },
-  "tags": []
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "api-key"
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ]
 }
