@@ -109,8 +109,8 @@
 		"/collections/{collectionId}": {
 			"get": {
 				"tags": ["Collections"],
-				"summary": "Get collection",
-				"description": "Get a specific collection by ID",
+				"summary": "Find collection",
+				"description": "Finds a collection by its ID",
 				"operationId": "getCollection",
 				"parameters": [
 					{
@@ -224,9 +224,9 @@
 						"in": "query",
 						"schema": {
 							"type": "integer",
-							"default": 50
+							"default": 10
 						},
-						"description": "The number of results per page. Defaults to 50."
+						"description": "The number of results per page. Defaults to 10."
 					}
 				],
 				"responses": {
@@ -301,8 +301,8 @@
 		"/collections/{collectionId}/records/{recordId}": {
 			"get": {
 				"tags": ["Records"],
-				"summary": "Get record",
-				"description": "Get a specific record by ID",
+				"summary": "Find record",
+				"description": "Finds a record in a collection",
 				"operationId": "getRecord",
 				"parameters": [
 					{
@@ -335,10 +335,10 @@
 					}
 				}
 			},
-			"put": {
+			"patch": {
 				"tags": ["Records"],
 				"summary": "Update record",
-				"description": "Update a record",
+				"description": "Updates a record in a collection",
 				"operationId": "updateRecord",
 				"parameters": [
 					{
@@ -490,7 +490,7 @@
 			"post": {
 				"tags": ["Records"],
 				"summary": "Calculate records",
-				"description": "Calculate records from a collection",
+				"description": "Triggers operations to calculate a field in multiple records in a collection",
 				"operationId": "calculateRecords",
 				"parameters": [
 					{
@@ -668,17 +668,34 @@
 										"data": {
 											"type": "array",
 											"items": {
-												"$ref": "#/components/schemas/Chat"
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string",
+														"description": "The ID of the chat"
+													},
+													"fieldId": {
+														"type": "string",
+														"description": "The ID of the chat field"
+													},
+													"recordId": {
+														"type": "string",
+														"description": "The ID of the record"
+													}
+												}
 											}
 										},
 										"pageNumber": {
-											"type": "integer"
+											"type": "integer",
+											"description": "The number of the current page of chats. Starts at 0."
 										},
 										"pageSize": {
-											"type": "integer"
+											"type": "integer",
+											"description": "The number of results per page."
 										},
 										"totalSize": {
-											"type": "integer"
+											"type": "integer",
+											"description": "The total number of chats matching the filters on the collection."
 										}
 									}
 								}
@@ -756,7 +773,21 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/Chat"
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string",
+											"description": "The ID of the chat"
+										},
+										"recordId": {
+											"type": "string",
+											"description": "The ID of the record the chat is in"
+										},
+										"fieldId": {
+											"type": "string",
+											"description": "The ID of the chat field"
+										}
+									}
 								}
 							}
 						}
@@ -989,26 +1020,6 @@
 				"summary": "List contacts",
 				"description": "Gets a list of user contacts",
 				"operationId": "listContacts",
-				"parameters": [
-					{
-						"name": "pageNumber",
-						"in": "query",
-						"schema": {
-							"type": "integer",
-							"default": 0
-						},
-						"description": "The page number to retrieve. Starts at 0. Defaults to 0."
-					},
-					{
-						"name": "pageSize",
-						"in": "query",
-						"schema": {
-							"type": "integer",
-							"default": 100
-						},
-						"description": "The number of results per page. Defaults to 100."
-					}
-				],
 				"responses": {
 					"200": {
 						"description": "Successful response",
@@ -1125,7 +1136,7 @@
 			"get": {
 				"tags": ["Triggers"],
 				"summary": "List triggers",
-				"description": "Gets a list of all triggers/webhooks",
+				"description": "Gets a list of triggers configured in the authenticated workspace",
 				"operationId": "listTriggers",
 				"parameters": [
 					{
@@ -1142,9 +1153,9 @@
 						"in": "query",
 						"schema": {
 							"type": "integer",
-							"default": 100
+							"default": 10
 						},
-						"description": "The number of results per page. Defaults to 100."
+						"description": "The number of results per page. Defaults to 10."
 					}
 				],
 				"responses": {
@@ -1198,7 +1209,7 @@
 			"post": {
 				"tags": ["Triggers"],
 				"summary": "Create trigger",
-				"description": "Creates a new trigger/webhook for a collection",
+				"description": "Creates a new trigger to receive external API calls",
 				"operationId": "createTrigger",
 				"requestBody": {
 					"required": true,
@@ -1233,9 +1244,9 @@
 		"/triggers/{workspaceId}/{key}": {
 			"post": {
 				"tags": ["Triggers"],
-				"summary": "Execute trigger (Webhook Inbound)",
+				"summary": "Publish trigger",
 				"description": "Using the key to identify the trigger, creates a new record in the trigger's collection with the request body in the trigger's field",
-				"operationId": "executeTrigger",
+				"operationId": "publishTrigger",
 				"parameters": [
 					{
 						"name": "workspaceId",
@@ -1244,7 +1255,7 @@
 						"schema": {
 							"type": "string"
 						},
-						"description": "The workspace ID where the trigger belongs"
+						"description": "The workspace ID. You can find the workspaceId in the Workspace settings page."
 					},
 					{
 						"name": "key",
@@ -1253,11 +1264,11 @@
 						"schema": {
 							"type": "string"
 						},
-						"description": "The trigger key to identify which trigger to execute"
+						"description": "The unique key that identifies the trigger"
 					}
 				],
 				"requestBody": {
-					"description": "The data to be sent to the trigger",
+					"description": "The request body data to be stored in the trigger's field",
 					"required": true,
 					"content": {
 						"application/json": {
@@ -1270,7 +1281,7 @@
 				},
 				"responses": {
 					"200": {
-						"description": "Trigger executed successfully",
+						"description": "Trigger published successfully",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -1370,36 +1381,171 @@
 					"id": {
 						"type": "string"
 					},
-					"collectionId": {
-						"type": "string"
-					},
-					"data": {
-						"type": "object"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
+					"properties": {
+						"type": "object",
+						"description": "The properties/fields of the record"
 					}
 				}
 			},
 			"CreateRecordRequest": {
 				"type": "object",
-				"required": ["data"],
+				"required": ["properties"],
 				"properties": {
-					"data": {
-						"type": "object"
+					"properties": {
+						"type": "object",
+						"description": "An object with the field ID as the key and the value as the field value",
+						"additionalProperties": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string",
+									"description": "The type of the field"
+								},
+								"text": {
+									"type": "object",
+									"properties": {
+										"value": {
+											"type": "string"
+										}
+									}
+								},
+								"number": {
+									"type": "object",
+									"properties": {
+										"value": {
+											"type": "number"
+										}
+									}
+								},
+								"boolean": {
+									"type": "object",
+									"properties": {
+										"value": {
+											"type": "boolean"
+										}
+									}
+								},
+								"date": {
+									"type": "object",
+									"properties": {
+										"value": {
+											"type": "string",
+											"format": "date-time"
+										}
+									}
+								},
+								"email": {
+									"type": "object",
+									"properties": {
+										"value": {
+											"type": "string",
+											"format": "email"
+										}
+									}
+								},
+								"url": {
+									"type": "object",
+									"properties": {
+										"value": {
+											"type": "string",
+											"format": "uri"
+										}
+									}
+								},
+								"json": {
+									"type": "object",
+									"properties": {
+										"value": {
+											"type": "object"
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			},
 			"UpdateRecordRequest": {
 				"type": "object",
+				"required": ["properties"],
 				"properties": {
-					"data": {
-						"type": "object"
+					"properties": {
+						"type": "object",
+						"description": "An object with the field ID as the key and the value as the field value",
+						"additionalProperties": {
+							"type": "object",
+							"properties": {
+								"type": {
+									"type": "string",
+									"enum": ["boolean", "date", "json", "number", "select", "text"],
+									"description": "The type of the field"
+								},
+								"boolean": {
+									"type": "object",
+									"properties": {
+										"value": {
+											"type": "boolean",
+											"nullable": true
+										}
+									}
+								},
+								"date": {
+									"type": "object",
+									"properties": {
+										"value": {
+											"type": "string",
+											"format": "date-time",
+											"nullable": true
+										}
+									}
+								},
+								"json": {
+									"type": "object",
+									"properties": {
+										"value": {
+											"type": "object",
+											"nullable": true
+										}
+									}
+								},
+								"number": {
+									"type": "object",
+									"properties": {
+										"value": {
+											"type": "number",
+											"nullable": true
+										}
+									}
+								},
+								"select": {
+									"type": "object",
+									"properties": {
+										"value": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "string"
+													}
+												},
+												"required": ["id"]
+											},
+											"nullable": true
+										}
+									}
+								},
+								"text": {
+									"type": "object",
+									"properties": {
+										"value": {
+											"type": "string",
+											"nullable": true
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			},
@@ -1763,32 +1909,77 @@
 			},
 			"CreateTriggerRequest": {
 				"type": "object",
-				"required": ["collectionId", "fieldId"],
+				"required": ["fieldId", "collectionId"],
 				"properties": {
-					"collectionId": {
-						"type": "string"
-					},
 					"fieldId": {
-						"type": "string"
+						"type": "string",
+						"description": "The ID of the field to receive the request body. Must be of a JSON type field."
+					},
+					"collectionId": {
+						"type": "string",
+						"description": "The ID of the collection the field is in."
 					}
 				}
 			},
 			"QueryRecordsRequest": {
 				"type": "object",
 				"properties": {
-					"filters": {
-						"type": "object",
-						"description": "Filter conditions for the query"
-					},
-					"sort": {
-						"type": "object",
-						"properties": {
-							"field": {
-								"type": "string"
+					"orderBy": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"fieldId": {
+									"type": "string",
+									"description": "The ID of the field to order by"
+								},
+								"direction": {
+									"type": "string",
+									"enum": ["asc", "desc"],
+									"description": "The direction of the order"
+								}
 							},
-							"order": {
+							"required": ["fieldId", "direction"]
+						},
+						"description": "An array of objects with the field ID and the direction of the order"
+					},
+					"filter": {
+						"type": "object",
+						"description": "Filter conditions for the query",
+						"properties": {
+							"type": {
 								"type": "string",
-								"enum": ["asc", "desc"]
+								"enum": ["and", "or"],
+								"description": "The type of filter operation"
+							},
+							"and": {
+								"type": "object",
+								"properties": {
+									"filters": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"type": {
+													"type": "string",
+													"enum": ["equals", "notEquals", "greaterThan", "greaterThanOrEquals", "lessThan", "lessThanOrEquals", "isEmpty", "isPending", "hasError", "fileType"]
+												},
+												"fieldId": {
+													"type": "string"
+												},
+												"value": {
+													"oneOf": [
+														{"type": "string"},
+														{"type": "number"},
+														{"type": "boolean"},
+														{"type": "array", "items": {"type": "string"}}
+													]
+												}
+											},
+											"required": ["type", "fieldId", "value"]
+										}
+									}
+								}
 							}
 						}
 					}
@@ -1796,35 +1987,32 @@
 			},
 			"CalculateRecordsRequest": {
 				"type": "object",
+				"required": ["fieldId", "recordIds"],
 				"properties": {
-					"operation": {
+					"fieldId": {
 						"type": "string",
-						"enum": ["count", "sum", "avg", "min", "max"]
+						"description": "The ID of the field to be calculated"
 					},
-					"field": {
-						"type": "string",
-						"description": "Field to perform calculation on"
-					},
-					"filters": {
-						"type": "object",
-						"description": "Filter conditions for the calculation"
+					"recordIds": {
+						"type": "array",
+						"items": {
+							"type": "string"
+						},
+						"description": "An array of the IDs of the records to be calculated"
 					}
 				}
 			},
 			"CalculateRecordsResponse": {
 				"type": "object",
+				"description": "Response after calculating records",
 				"properties": {
-					"result": {
-						"type": "number",
-						"description": "The calculated result"
+					"success": {
+						"type": "boolean",
+						"description": "Indicates if the calculation was successful"
 					},
-					"operation": {
+					"message": {
 						"type": "string",
-						"description": "The operation performed"
-					},
-					"field": {
-						"type": "string",
-						"description": "The field that was calculated"
+						"description": "Response message"
 					}
 				}
 			}

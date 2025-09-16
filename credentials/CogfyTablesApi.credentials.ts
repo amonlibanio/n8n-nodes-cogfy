@@ -37,7 +37,7 @@ export class CogfyTablesApi implements ICredentialType {
 		type: "generic",
 		properties: {
 			headers: {
-				"api-key": "={{$credentials.apiKey}}",
+				"Api-Key": "={{$credentials.apiKey}}",
 				"Content-Type": "application/json",
 			},
 		},
@@ -49,7 +49,7 @@ export class CogfyTablesApi implements ICredentialType {
 			url: "/collections",
 			method: "GET",
 			headers: {
-				"api-key": "={{$credentials.apiKey}}",
+				"Api-Key": "={{$credentials.apiKey}}",
 				"Content-Type": "application/json",
 			},
 		},

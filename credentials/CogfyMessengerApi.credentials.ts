@@ -37,7 +37,7 @@ export class CogfyMessengerApi implements ICredentialType {
 		type: "generic",
 		properties: {
 			headers: {
-				Authorization: "=Bearer {{$credentials.apiKey}}",
+				"api-key": "={{$credentials.apiKey}}",
 				"Content-Type": "application/json",
 			},
 		},
