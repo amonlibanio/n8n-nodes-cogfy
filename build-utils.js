@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { copyFile, mkdir, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
@@ -49,16 +49,34 @@ async function copyIndex() {
   // Copy index.js to dist folder
   const sourcePath = 'index.js';
   const destPath = 'dist/index.js';
-  
+
   if (existsSync(sourcePath)) {
     await copyFile(sourcePath, destPath);
     console.log('Copied index.js to dist folder');
   }
 }
 
+async function createDistPackageJson() {
+  // Read the source package.json
+  const sourcePackagePath = 'package.json';
+  const destPackagePath = 'dist/package.json';
+
+  if (existsSync(sourcePackagePath)) {
+    const packageJson = JSON.parse(readFileSync(sourcePackagePath, 'utf8'));
+
+    // Remove the "type": "module" field for n8n compatibility
+    delete packageJson.type;
+
+    // Write the modified package.json to dist folder
+    writeFileSync(destPackagePath, JSON.stringify(packageJson, null, 2));
+    console.log('Created dist package.json without type: module');
+  }
+}
+
 async function main() {
   await copyIcons();
   await copyIndex();
+  await createDistPackageJson();
 }
 
 main().catch(console.error);
