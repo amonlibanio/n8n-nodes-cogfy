@@ -37,12 +37,12 @@
   "n8n": {
     "n8nNodesApiVersion": 1,
     "credentials": [
-      "dist/credentials/CogfyMessengerApi.credentials.js",
-      "dist/credentials/CogfyTablesApi.credentials.js"
+      "credentials/CogfyMessengerApi.credentials.js",
+      "credentials/CogfyTablesApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/CogfyMessenger/CogfyMessenger.node.js",
-      "dist/nodes/CogfyTables/CogfyTables.node.js"
+      "nodes/CogfyMessenger/CogfyMessenger.node.js",
+      "nodes/CogfyTables/CogfyTables.node.js"
     ]
   },
   "dependencies": {

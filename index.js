@@ -1,7 +1,7 @@
-const { CogfyMessenger } = require('./dist/nodes/CogfyMessenger/CogfyMessenger.node');
-const { CogfyTables } = require('./dist/nodes/CogfyTables/CogfyTables.node');
+import { CogfyMessenger } from './nodes/CogfyMessenger/CogfyMessenger.node.js';
+import { CogfyTables } from './nodes/CogfyTables/CogfyTables.node.js';
 
-module.exports = {
+export {
   CogfyMessenger,
   CogfyTables
 };

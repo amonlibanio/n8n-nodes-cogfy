@@ -45,4 +45,20 @@ async function copyIcons() {
   console.log(`Copied ${imageFiles.length} image files to dist folders`);
 }
 
-copyIcons().catch(console.error);
+async function copyIndex() {
+  // Copy index.js to dist folder
+  const sourcePath = 'index.js';
+  const destPath = 'dist/index.js';
+  
+  if (existsSync(sourcePath)) {
+    await copyFile(sourcePath, destPath);
+    console.log('Copied index.js to dist folder');
+  }
+}
+
+async function main() {
+  await copyIcons();
+  await copyIndex();
+}
+
+main().catch(console.error);
