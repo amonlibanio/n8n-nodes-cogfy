@@ -1,4 +1,3 @@
-import { expect, test } from 'bun:test';
 import { CogfyMessengerApi } from '../credentials/CogfyMessengerApi.credentials';
 
 test('credentials properties', () => {

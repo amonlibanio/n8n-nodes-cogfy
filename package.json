@@ -1,7 +1,7 @@
 {
   "name": "@amonlibanio/n8n-nodes-cogfy",
-  "version": "1.0.5",
-  "description": "n8n node to connect with Cogfy",
+  "version": "1.1.0",
+  "description": "n8n community node package for Cogfy API integration",
   "keywords": [
     "n8n-community-node-package",
     "cogfy",
@@ -9,10 +9,12 @@
     "messenger",
     "tables",
     "database",
-    "automation"
+    "automation",
+    "n8n",
+    "workflow"
   ],
   "license": "MIT",
-  "homepage": "",
+  "homepage": "https://github.com/amonlibanio/n8n-nodes-cogfy#readme",
   "author": {
     "name": "Amon Libanio",
     "email": "amonlibanio@gmail.com"
@@ -21,21 +23,22 @@
     "type": "git",
     "url": "https://github.com/amonlibanio/n8n-nodes-cogfy.git"
   },
-  "engines": {
-    "node": ">=22",
-    "bun": ">=1.2.22"
+  "bugs": {
+    "url": "https://github.com/amonlibanio/n8n-nodes-cogfy/issues"
   },
-  "packageManager": "bun@1.2.22",
-  "type": "module",
+  "engines": {
+    "node": ">=18.10",
+    "pnpm": ">=9.1"
+  },
+  "packageManager": "pnpm@9.1.4",
   "main": "index.js",
   "scripts": {
-    "build": "bun run tsc && bun run build-utils.js",
-    "dev": "bun run tsc --watch",
-    "test": "bun test",
-    "format": "bun run biome format --write .",
-    "lint": "bun run biome lint . && bun run eslint nodes credentials",
-    "lintfix": "bun run biome check --write . && bun run eslint nodes credentials --fix",
-    "check": "bun run biome check . && bun run eslint nodes credentials"
+    "build": "tsc && gulp build:icons",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "format": "prettier nodes credentials --write",
+    "lint": "eslint nodes credentials package.json",
+    "lintfix": "eslint nodes credentials package.json --fix"
   },
   "files": [
     "dist"
@@ -52,21 +55,21 @@
     ]
   },
   "dependencies": {
-    "n8n-workflow": "^1.82.0",
     "@amonlibanio/n8n-openapi-node": "^1.0.0"
   },
-  "peerDependencies": {
-    "n8n-workflow": "*"
-  },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.4",
-    "@eslint/js": "^9.35.0",
-    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "@types/jest": "^30.0.0",
     "@typescript-eslint/parser": "^8.44.0",
     "eslint": "^9.35.0",
     "eslint-plugin-n8n-nodes-base": "^1.16.3",
-    "openapi-types": "^12.1.3",
+    "gulp": "^5.0.1",
+    "n8n-workflow": "*",
+    "prettier": "^3.6.2",
     "typescript": "^5.9.2",
-    "@types/bun": "latest"
+    "jest": "^30.1.3",
+    "ts-jest": "^29.4.2"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
   }
 }

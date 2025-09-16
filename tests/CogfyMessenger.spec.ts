@@ -1,4 +1,3 @@
-import { expect, test } from 'bun:test';
 import { CogfyMessenger } from '../nodes/CogfyMessenger/CogfyMessenger.node';
 
 test('smoke', () => {
