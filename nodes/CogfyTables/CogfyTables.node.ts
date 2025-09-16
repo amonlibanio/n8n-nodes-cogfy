@@ -6,6 +6,7 @@ import type {
   INodeTypeDescription, 
   NodeConnectionType 
 } from 'n8n-workflow';
+import { NodeApiError } from 'n8n-workflow';
 import type { OpenAPIV3 } from 'openapi-types';
 import * as doc from './openapi.json';
 
@@ -16,7 +17,7 @@ export class CogfyTables implements INodeType {
   description: INodeTypeDescription = {
     displayName: 'Cogfy Tables',
     name: 'cogfyTables',
-    icon: 'file:cogfy.png',
+    icon: 'file:cogfy.svg',
     group: ['transform'],
     version: 1,
     subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
@@ -74,7 +75,7 @@ export class CogfyTables implements INodeType {
             },
           });
         } else {
-          throw new Error(`Cogfy Tables API error: ${error.message}`);
+          throw new NodeApiError(this.getNode(), error, { message: `Cogfy Tables API error: ${error.message}` });
         }
       }
     }

@@ -5,7 +5,7 @@ task('build:icons', copyIcons);
 
 function copyIcons() {
     // Copy icon from public folder to nodes and credentials folders
-    const iconSource = path.resolve('public', 'cogfy.png');
+    const iconSource = path.resolve('public', 'cogfy.svg');
     
     // Copy to each individual node folder
     src(iconSource).pipe(dest(path.resolve('dist', 'nodes', 'CogfyMessenger')));
